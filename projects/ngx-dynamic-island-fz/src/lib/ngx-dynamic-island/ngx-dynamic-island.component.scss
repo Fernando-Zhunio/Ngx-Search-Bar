@@ -1,0 +1,72 @@
+.ndi {
+  position: fixed;
+  z-index: 1050;
+  padding: 8px;
+  overflow-x: none;
+  .ndi-item {
+    background-color: #343a40 !important;
+    padding: 10px 14px;
+    margin-top: 5px;
+    border-radius: 12px;
+  }
+  .ndi-btn-close {
+    position: absolute;
+    right: 9px;
+    background: no-repeat;
+    border: none;
+  }
+  cursor: pointer;
+  .ndi-wrapper {
+    color: white;
+    box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075) !important;
+    max-height: 75vh;
+    overflow-x: hidden;
+    overflow-y: auto;
+    position: relative;
+  }
+  .ndi-notification {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    img {
+      width: 55px;
+      border-radius: 10px;
+      margin-right: 10px;
+      object-fit: contain;
+      aspect-ratio: 1/1;
+      box-shadow: 1px 1px 12px #767676, 1px 1px 0px #7e7b7b !important;
+    }
+    h3,
+    p {
+      margin: 0;
+    }
+    p {
+      color: gray;
+    }
+  }
+
+  .downloading {
+    color: rgb(141, 168, 204);
+    display: block;
+  }
+
+  .download-error {
+    color: red
+  }
+
+  .scrollbar-fz::-webkit-scrollbar {
+    width: 7px;
+    background-color: #f5f5f5;
+  }
+
+  .scrollbar-fz::-webkit-scrollbar-thumb {
+    border-radius: 10px;
+    background-color: #fff;
+    background-image: -webkit-linear-gradient(top, #2ab0ed 0%, #bfe8f9 50%, #2ab0ed 100%);
+  }
+
+  .scrollbar-fz::-webkit-scrollbar-track {
+    -webkit-box-shadow: inset 0 0 6px rgb(0 0 0 / 10%);
+    border-radius: 10px;
+  }
+}

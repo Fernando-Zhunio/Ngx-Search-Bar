@@ -1,0 +1,29 @@
+<div *ngIf="dynamicIslands?.size! > 0" [style.maxWidth]="maxWidthPx + 'px'" [style]="cssPosition" class="ndi">
+  <div #scrollMe class="ndi-wrapper scrollbar-fz">
+    <div @fadeIsland class="ndi-item"  *ngFor="let dynamicIsland of dynamicIslands | keyvalue; trackBy:itemTrackBy">
+      <button (click)="destroyDynamicIsland(dynamicIsland.key)" class="ndi-btn-close">
+        <svg style="width: 10px;fill: red;" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Pro 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2022 Fonticons, Inc. --><path d="M310.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L160 210.7 54.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L114.7 256 9.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L160 301.3 265.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L205.3 256 310.6 150.6z"/></svg>
+      </button>
+      <ng-container>
+        <div (click)="actionExecute(dynamicIsland.value.notification.action, dynamicIsland.key)">
+          <div class="ndi-notification">
+            <div *ngIf="dynamicIsland.value.notification?.image">
+              <img [src]="dynamicIsland.value.notification.image" alt="notification">
+            </div>
+            <div>
+              <h3 *ngIf="dynamicIsland.value.notification?.title">{{ dynamicIsland.value.notification.title }}</h3>
+              <p>{{ dynamicIsland.value.notification.content }}</p>
+              <small *ngIf="dynamicIsland.value.notification?.createdAt">{{ dynamicIsland.value.notification.createdAt | date: 'medium' }}</small>
+            </div>
+          </div>
+          <small class="downloading" *ngIf="dynamicIsland.value.statusDownload?.status === 'downloading'">
+            Descargando Archivo:  {{ dynamicIsland.value.statusDownload.progress}} %
+          </small>
+          <small class="download-error" *ngIf="dynamicIsland.value.statusDownload?.status === 'download-error'">
+            Error al descargar el archivo
+          </small>
+        </div>
+      </ng-container>
+    </div>
+  </div>
+</div>

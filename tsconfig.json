@@ -11,6 +11,12 @@
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true,
     "sourceMap": true,
+    "paths": {
+      "ngx-dynamic-island-fz": [
+        "dist/ngx-dynamic-island-fz/ngx-dynamic-island-fz",
+        "dist/ngx-dynamic-island-fz"
+      ]
+    },
     "declaration": false,
     "downlevelIteration": true,
     "experimentalDecorators": true,
