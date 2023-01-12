@@ -1,6 +1,6 @@
 import { ComponentRef, Injectable, ViewContainerRef } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
-import { DynamicIslandNotification, DynamicIslandNotificationMetadata } from '../interfaces/dynamic-island';
+import { DynamicIslandInput, DynamicIslandNotification, DynamicIslandNotificationMetadata } from '../interfaces/dynamic-island';
 import { NgxDynamicIslandComponent } from '../public-api';
 
 @Injectable({
@@ -12,56 +12,64 @@ export class NgxDynamicIslandService {
   openCount = 0;
   component: ComponentRef<NgxDynamicIslandComponent> | null = null;
 
-  data: BehaviorSubject<Map<Symbol, DynamicIslandNotificationMetadata>> = new BehaviorSubject<Map<Symbol, DynamicIslandNotificationMetadata>>(new Map<Symbol, DynamicIslandNotificationMetadata>());
-  readonly duration = 4000
+  data: BehaviorSubject<Map<any, DynamicIslandNotificationMetadata>> = new BehaviorSubject<Map<Symbol, DynamicIslandNotificationMetadata>>(new Map<Symbol, DynamicIslandNotificationMetadata>());
+  OPTION_DEFAULT: DynamicIslandInput = {
+    duration: 4000,
+    maxWidthPx: 600,
+    position: 'bottom-right'
+  }
   constructor() { }
 
-  show(info: DynamicIslandNotification): any {
+  setOptions(options: DynamicIslandInput): void {
+    if (this.component) {
+      this.component.instance.maxWidthPx = options.maxWidthPx || this.OPTION_DEFAULT.maxWidthPx!;
+      this.component.instance.position = options.position || this.OPTION_DEFAULT.position!;
+    }
+  }
+
+  show(info: DynamicIslandNotification, options?: DynamicIslandInput, customKey: any = null): any {
     if (!this.component) {
       this.component = this.viewContainerRef.createComponent(NgxDynamicIslandComponent);
+      this.setOptions(options || this.OPTION_DEFAULT);
     }
-    const key = this.addDynamicIslandNotification(info);
-    if (info?.action !== 'download') {
-      this.deleteForDuration(key);
+    const key = this.addDynamicIslandNotification(info, options, customKey);
+    if (options?.action !== 'download' || options?.duration) {
+      this.deleteForDuration(key, options?.duration);
     }
     return key;
   }
 
-  deleteForDuration(key: Symbol, duration: number = 4000): void {
+  deleteForDuration(key: Symbol, duration: number | null = null): void {
     setTimeout(() => {
-      this.destroyDynamicIsland(key);
-    }, duration);
+      const data = this.data.getValue();
+      if (data.has(key)) {
+        this.destroyDynamicIsland(key);
+      }
+    }, duration || this.OPTION_DEFAULT.duration);
   }
 
   destroyDynamicIsland(key: Symbol): void {
     const data = this.data.getValue();
     data.delete(key);
     this.data.next(data);
-    // if (data.size === 0) {
-    //   this.component?.destroy();
-    //   this.component = null;
-    //   this.viewContainerRef.clear();
-    // }
   }
 
-  // setDataComponent(option:{maxWidthPx,position}): void {
-  //   this.component?.instance.data = this.data;
-  // }
-
-  private addDynamicIslandNotification(option: DynamicIslandNotification, key: any = Symbol()): Symbol {
+  private addDynamicIslandNotification(info: DynamicIslandNotification, option?: DynamicIslandInput, customKey: any = null): Symbol {
     const newData: DynamicIslandNotificationMetadata = {
-      notification: option,
-      id: key,
-      duration:  this.duration,
+      notification: info,
+      id: customKey || Symbol(),
+      duration: option?.duration || this.OPTION_DEFAULT.duration || 4000,
       statusDownload: {
         status: null,
         progress: 0
-      }
+      },
+      status: option?.status || 'light',
+      action: option?.action || 'none'
     }
     const data = this.data.getValue();
-    data.set(key, newData);
+    data.set(newData.id, newData);
     this.data.next(data);
-    return key;
+    return newData.id;
   }
 
   setViewContainerRef(viewContainerRef: ViewContainerRef): void {

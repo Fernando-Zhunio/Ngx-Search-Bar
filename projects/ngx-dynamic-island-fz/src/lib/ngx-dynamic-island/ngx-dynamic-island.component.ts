@@ -6,7 +6,7 @@ import { Subscription } from 'rxjs';
 import { Download } from '../../class/download';
 import { Redirect } from '../../class/redirect';
 import { DynamicIslandNotificationMetadata } from '../../interfaces/dynamic-island';
-import { ActionNotification } from '../../types/action';
+import { NgxDynamicIslandAction } from '../../types/action';
 import { NgxDynamicIslandPosition } from '../../types/position';
 import { NgxDynamicIslandService } from '../ngx-dynamic-island.service';
 
@@ -77,22 +77,23 @@ export class NgxDynamicIslandComponent implements OnInit, OnDestroy {
     this.cssPosition = this.generateCssPosition(position);
   }
 
-  actionExecute(action: ActionNotification, key: any): void {
-    const actionData = this.dynamicIslands.get(key)!;
-    switch (action) {
-      case 'download':
-        if (actionData.statusDownload?.status === 'downloading') {
-          break;
-        }
+  actionExecute(action: NgxDynamicIslandAction | undefined, key: any): void {
+    const actionData = this.dynamicIslands.get(key);
+    if (!action || !actionData || actionData?.statusDownload?.status === 'downloading') { return;}
+
+    const setActions: any = {
+      'download' : () => {
         actionData.statusDownload = {
           status: 'downloading',
           progress: 0
         };
         this.downloadFile(actionData);
-        break;
-      case 'redirect':
+      },
+      'redirect' : () => {
         new Redirect(this.router).redirectTo(actionData.notification.pathOrUrl!);
+      }
     }
+    setActions?.[action]();
   }
 
   downloadFile(data: DynamicIslandNotificationMetadata) {
@@ -137,22 +138,16 @@ export class NgxDynamicIslandComponent implements OnInit, OnDestroy {
   }
 
   generateCssPosition(position: NgxDynamicIslandPosition): string {
-    switch (position) {
-      case 'top-right':
-        return 'top: 0; right: 0;';
-      case 'bottom-right':
-        return 'bottom: 0; right: 0;';
-      case 'top-left':
-        return 'top: 0; left: 0;';
-      case 'bottom-left':
-        return 'bottom: 0; left: 0;';
-      case 'top-center':
-        return 'top: 0; left: 50%; transform: translateX(-50%);';
-      case 'bottom-center':
-        return 'bottom: 0; left: 50%; transform: translateX(-50%);';
-      default:
-        return 'top: 0; left: 50%; transform: translateX(-50%);';
+    const defaultPosition = 'top-center';
+    const positionCss = {
+      'bottom-center': 'bottom: 0; left: 50%; transform: translateX(-50%);',
+      'bottom-right': 'bottom: 0; right: 0;',
+      'bottom-left': 'bottom: 0; left: 0;',
+      'top-center': 'top: 0; left: 50%; transform: translateX(-50%);',
+      'top-right': 'top: 0; right: 0;',
+      'top-left': 'top: 0; left: 0;',
     }
+    return positionCss?.[position] || positionCss[defaultPosition];
   }
 
   itemTrackBy(_index: number, item: any) {

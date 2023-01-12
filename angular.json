@@ -31,6 +31,7 @@
               "src/assets"
             ],
             "styles": [
+              "./node_modules/@angular/material/prebuilt-themes/indigo-pink.css",
               "src/styles.scss"
             ],
             "scripts": []
@@ -99,6 +100,7 @@
               "src/assets"
             ],
             "styles": [
+              "./node_modules/@angular/material/prebuilt-themes/indigo-pink.css",
               "src/styles.scss"
             ],
             "scripts": []
@@ -133,6 +135,37 @@
             "main": "projects/ngx-dynamic-island-fz/src/test.ts",
             "tsConfig": "projects/ngx-dynamic-island-fz/tsconfig.spec.json",
             "karmaConfig": "projects/ngx-dynamic-island-fz/karma.conf.js"
+          }
+        }
+      }
+    },
+    "ngx-search-bar": {
+      "projectType": "library",
+      "root": "projects/ngx-search-bar",
+      "sourceRoot": "projects/ngx-search-bar/src",
+      "prefix": "lib",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-angular:ng-packagr",
+          "options": {
+            "project": "projects/ngx-search-bar/ng-package.json"
+          },
+          "configurations": {
+            "production": {
+              "tsConfig": "projects/ngx-search-bar/tsconfig.lib.prod.json"
+            },
+            "development": {
+              "tsConfig": "projects/ngx-search-bar/tsconfig.lib.json"
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "main": "projects/ngx-search-bar/src/test.ts",
+            "tsConfig": "projects/ngx-search-bar/tsconfig.spec.json",
+            "karmaConfig": "projects/ngx-search-bar/karma.conf.js"
           }
         }
       }

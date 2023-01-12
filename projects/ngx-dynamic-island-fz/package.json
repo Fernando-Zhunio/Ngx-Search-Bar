@@ -7,5 +7,14 @@
   },
   "dependencies": {
     "tslib": "^2.3.0"
+  },
+  "autor": {
+    "name": "Fernando Zhunio Reyes",
+    "email": "fzhunio@hotmail.com",
+    "github": "https://github.com/Fernando-Zhunio"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Fernando-Zhunio/Ngx-dynamic-island-fz"
   }
 }

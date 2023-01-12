@@ -1,1 +1,1 @@
-export type ActionNotification = 'download' | 'redirect' | 'html' | 'none';
+export type NgxDynamicIslandAction = 'download' | 'redirect' | 'html' | 'none';

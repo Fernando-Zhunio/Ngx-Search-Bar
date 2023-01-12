@@ -1,27 +1,95 @@
-# NgxDynamicIsland
+# NgxDynamicIsland Notification
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 13.3.2.
+This is a notification component for Angular 14+.
 
-## Development server
+## Installation
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
+To install this library, run:
 
-## Code scaffolding
+```bash
+$ npm install ngx-dynamic-island --save
+```
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+and then from your Angular `AppModule`:
 
-## Build
+```typescript
+import { BrowserModule } from '@angular/platform-browser';
+import { NgModule } from '@angular/core';
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
+import { AppComponent } from './app.component';
 
-## Running unit tests
+// Import your library
+import { NgxDynamicIslandModule } from 'ngx-dynamic-island';
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+@NgModule({
+  declarations: [
+    AppComponent
+  ],
+  imports: [
+    BrowserModule,
 
-## Running end-to-end tests
+    // Specify your library as an import
+     NgxDynamicIslandModule
+  ],
+  providers: [],
+  bootstrap: [AppComponent]
+})
+export class AppModule { }
+```
 
-Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To use this command, you need to first add a package that implements end-to-end testing capabilities.
+Usage in templates is as simple as:
 
-## Further help
+```html
 
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
+<ngx-dynamic-island></ngx-dynamic-island>
+
+```
+
+### Individual components can inject NgxDynamicIslandService
+
+```typescript
+import { Component, OnInit } from '@angular/core';
+import { NgxDynamicIslandService } from 'ngx-dynamic-island';
+
+@Component({
+  selector: 'app-root',
+    templateUrl: './app.component.html',
+    styleUrls: ['./app.component.css']
+})
+export class AppComponent implements OnInit {
+  constructor(private ngxDynamicIslandService: NgxDynamicIslandService) {}
+
+  ngOnInit() {
+    this.ngxDynamicIslandService.show({
+      title: 'Notification',
+      message: 'This is a notification',
+      type: 'success',
+    });
+  }
+
+  showNotification(status: any) {
+    this.ndis.show({
+      title: 'Notification',
+      pathOrUrl: 'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf',
+      content: 'new content',
+      createdAt: new Date
+    }, {status, action: 'download', position: 'top-center'});
+  }
+}
+```
+
+#### Inputs
+
+| Name | Type | Default | Description |
+| maxWidthPx | number | 600px | max width of notifications |
+| position | NgxDynamicIslandPosition | 'bottom-right' | position of notifications |
+| duration | number | 4000 | duration of notifications |
+| status | NgxDynamicIslandStatus | 'info' | status of notifications |
+| action | NgxDynamicIslandAction | 'close' | action of notifications |
+
+
+#### Actions 
+'download' | 'redirect' | 'html' | 'none';
+
+#### Statuses
+'warning' | 'danger' | 'success' | 'info' | 'light';

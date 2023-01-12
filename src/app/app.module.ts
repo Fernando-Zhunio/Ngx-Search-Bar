@@ -1,19 +1,27 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-import { NgxDynamicIslandModule } from 'projects/ngx-dynamic-island-fz/src/public-api';
+// import { NgxDynamicIslandModule } from 'projects/ngx-dynamic-island-fz/src/public-api';
 
 import { AppComponent } from './app.component';
-// import { NgxDynamicIslandModule } from '../../projects/ngx-dynamic-island/src/public-api';
-
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { NgxSearchBarModule } from 'projects/ngx-search-bar/src/public-api';
+// import { BASE_URL } from 'projects/ngx-search-bar/src/lib/utils/injections/base-url';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { ReactiveFormsModule } from '@angular/forms';
+import { MatInputModule } from '@angular/material/input';
 @NgModule({
   declarations: [
     AppComponent,
   ],
   imports: [
     BrowserModule,
-    NgxDynamicIslandModule,
+    BrowserAnimationsModule,
+    // NgxDynamicIslandModule,
+    MatFormFieldModule,
+    MatInputModule,
+    ReactiveFormsModule,
+    NgxSearchBarModule,
   ],
-  providers: [],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

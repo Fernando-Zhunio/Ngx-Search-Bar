@@ -1,1 +1,14 @@
-<ngx-dynamic-island></ngx-dynamic-island>
+<!-- <ngx-dynamic-island></ngx-dynamic-island> -->
+<ngx-search-bar [formFilter]="formFilter">
+
+
+    <div style="padding: 10px;" [formGroup]="formFilter" filterMenu>
+        <ng-container >
+            <mat-form-field style="width: 100%;">
+                <mat-label>Search</mat-label>
+                <input matInput type="text" formControlName="name">
+            </mat-form-field>
+        </ng-container>
+    </div>
+    
+</ngx-search-bar>

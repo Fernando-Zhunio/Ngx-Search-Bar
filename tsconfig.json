@@ -15,6 +15,10 @@
       "ngx-dynamic-island-fz": [
         "dist/ngx-dynamic-island-fz/ngx-dynamic-island-fz",
         "dist/ngx-dynamic-island-fz"
+      ],
+      "ngx-search-bar": [
+        "dist/ngx-search-bar/ngx-search-bar",
+        "dist/ngx-search-bar"
       ]
     },
     "declaration": false,

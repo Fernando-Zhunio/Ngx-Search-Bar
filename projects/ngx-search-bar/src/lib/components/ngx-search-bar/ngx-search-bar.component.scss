@@ -1,0 +1,35 @@
+.ngx-search-bar {
+  padding: 10px;
+  h1 {
+    padding: 0;
+    margin: 0;
+    padding-right: 10px;
+  }
+  .bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    div {
+      display: flex;
+      align-items: center;
+    }
+    .content-input-search {
+      background-color: #ececec;
+      border-radius: 8px;
+      min-width: 300px;
+      display: flex;
+      padding: 0 10px;
+      .input-search {
+        height: 30px;
+        border: none;
+        padding: 5px 10px;
+        width: fit-content;
+        display: inline-block;
+        width: 100%;
+        background-color: transparent;
+        outline: none;
+        font-size: 20px;
+      }
+    }
+  }
+}
