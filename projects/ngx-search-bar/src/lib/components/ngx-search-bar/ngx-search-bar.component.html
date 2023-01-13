@@ -12,14 +12,14 @@
           [formControl]="formSearch"
         />
         <div *ngIf="isLoading">
-          <mat-spinner [diameter]="20"></mat-spinner>
+          <mat-spinner class="spinner" [diameter]="20"></mat-spinner>
         </div>
       </div>
     </div>
     <div>
       <ng-container *ngIf="activeFilter">
       <mat-chip-list>
-          <mat-chip mat-button [matMenuTriggerFor]="menuRef"
+          <mat-chip [matBadge]="countFilter || null" mat-button [matMenuTriggerFor]="menuRef"
             ><mat-icon>filter_alt</mat-icon></mat-chip
           >
         </mat-chip-list>
@@ -40,5 +40,13 @@
         </mat-menu>
       </ng-container>
     </div>
+  </div>
+  <div class="paramns-container">
+    <mat-chip-list>
+        <mat-chip *ngFor="let queryParam of queryParamsNotNUllForTemplate | keyvalue">
+            {{ queryParam.value }}
+            <mat-icon matChipRemove (click)="removeQueryParam(queryParam.key)">cancel</mat-icon>
+        </mat-chip>
+    </mat-chip-list>
   </div>
 </div>
