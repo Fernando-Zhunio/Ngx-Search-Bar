@@ -6,9 +6,11 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { DATA_FOR_SEARCH_BAR, NgxSearchBarModule } from 'projects/ngx-search-bar/src/public-api';
 // import { BASE_URL } from 'projects/ngx-search-bar/src/lib/utils/injections/base-url';
 import { MatFormFieldModule } from '@angular/material/form-field';
-import { ReactiveFormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatInputModule } from '@angular/material/input';
 import { Router, RouterModule } from '@angular/router';
+import {MatSelectModule} from '@angular/material/select';
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -17,11 +19,11 @@ import { Router, RouterModule } from '@angular/router';
     BrowserModule,
     BrowserAnimationsModule,
     RouterModule.forRoot([]),
-    // NgxDynamicIslandModule,
     MatFormFieldModule,
     MatInputModule,
-    ReactiveFormsModule,
+    FormsModule,
     NgxSearchBarModule,
+    MatSelectModule,
   ],
   providers: [
     {
@@ -33,7 +35,7 @@ import { Router, RouterModule } from '@angular/router';
         }
       },
       deps: [Router]
-    }
+    },
   ],
   bootstrap: [AppComponent]
 })

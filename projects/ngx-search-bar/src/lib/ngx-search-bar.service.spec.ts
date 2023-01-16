@@ -18,7 +18,15 @@ describe('NgxSearchBarService', () => {
       providers: [
         {
           provide: DATA_FOR_SEARCH_BAR,
-          useValue: 'http://localhost:3000/'
+          useValue: {
+            ROUTER: { navigate(_a: never[], _b: { queryParams: { [x: string]: any; }; replaceUrl: true; }): void { alert('Please inject provider de Router with token DATA_FOR_SEARCH_BAR for use input isChangeUrl to true, in component NgxSearchBarComponent'); throw 'Please inject provider de Router with token DATA_FOR_SEARCH_BAR' } },
+            BASE_URL: 'http://localhost:3000/',
+            OPTIONS: {
+              disabled: false,
+              sizeOptions: [5, 10, 15, 20, 25, 30, 35, 40, 45, 50],
+
+            }
+          }
         },
         NgxSearchBarService
       ]
@@ -57,7 +65,6 @@ describe('NgxSearchBarService', () => {
 
     service.search('search/test', {}).subscribe(users => {
     }, error => {
-      console.log({"Fernando error":error})
       expect(error.error.type).toEqual(typeErrorName);
     });
 

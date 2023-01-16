@@ -12,7 +12,6 @@ export class NgxSearchBarService {
     @Inject(DATA_FOR_SEARCH_BAR) private data: FactoryInject)  { }
   
   search(path: string, params: any): Observable<any> {
-    console.log(this.data) 
     return this.http.get(`${this.data.BASE_URL}${path}`, {params});
   }
 }

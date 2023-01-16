@@ -12,6 +12,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { MatBadgeModule } from '@angular/material/badge';
 import { DATA_FOR_SEARCH_BAR } from './utils/DATA_FOR_SEARCH_BAR';
 import { Router } from '@angular/router';
+import {MatPaginatorModule} from '@angular/material/paginator';
 
 @NgModule({
   declarations: [
@@ -27,7 +28,8 @@ import { Router } from '@angular/router';
     MatChipsModule,
     MatMenuModule,
     MatBadgeModule,
-    MatProgressSpinnerModule
+    MatProgressSpinnerModule,
+    MatPaginatorModule,
   ],
   exports: [
     NgxSearchBarComponent,

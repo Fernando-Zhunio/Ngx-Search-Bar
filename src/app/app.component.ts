@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { FormControl, FormGroup } from '@angular/forms';
+// import { FormControl } from '@angular/forms';
+import { NgxFilter } from 'projects/ngx-search-bar/src/public-api';
 
 @Component({
   selector: 'app-root',
@@ -13,11 +14,19 @@ export class AppComponent implements OnInit {
   ngOnInit(): void {
   }
 
-  formFilter = new FormGroup({
-    name: new FormControl(''),
-    email: new FormControl(''),
-    phone: new FormControl(''),
-    address: new FormControl(''),
-  });
+  filters: NgxFilter = {
+    'filter1': {
+      friendlyName: 'Tiendas',
+      value: 'filter1'
+    },
+    'filter2': {
+      friendlyName: 'Celulares',
+      value: true
+    },
+    'filter3': {
+      friendlyName: 'Categorias',
+      value: []
+    }
+  };
 
 }

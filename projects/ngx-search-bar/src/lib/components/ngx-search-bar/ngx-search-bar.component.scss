@@ -42,8 +42,11 @@
         }
     }
   }
-  .paramns-container {
+  .params-container {
     margin-top: 5px;
     display: flex;
+    .values {
+      color: gray
+    }
   }
 }
