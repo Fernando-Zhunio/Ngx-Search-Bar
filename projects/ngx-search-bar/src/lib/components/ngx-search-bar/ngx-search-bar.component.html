@@ -15,14 +15,14 @@
         <ng-content select="[buttons]"></ng-content>
         
         <ng-container *ngIf="withFilter">
-          <mat-chip-list>
+          <mat-chip-set>
             <mat-chip
               [matBadge]="queryParamsNotNUllForTemplate.size || null"
               mat-button
               [matMenuTriggerFor]="menuRef"
               ><mat-icon>filter_alt</mat-icon></mat-chip
             >
-          </mat-chip-list>
+          </mat-chip-set>
           <mat-menu
             #menuRef="matMenu"
             x-position="after"
@@ -46,7 +46,7 @@
     </div>
   </div>
   <div *ngIf="withFilter" class="params-container">
-    <mat-chip-list class="d-flex">
+    <mat-chip-set class="d-flex">
       <mat-chip
         *ngFor="let queryParam of queryParamsNotNUllForTemplate | keyvalue"
       >
@@ -58,7 +58,7 @@
           >cancel</mat-icon
         >
       </mat-chip>
-    </mat-chip-list>
+    </mat-chip-set>
   </div>
   <div class="content">
     <ng-content></ng-content>

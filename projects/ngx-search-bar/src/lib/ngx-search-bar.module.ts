@@ -1,18 +1,17 @@
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-// import { NgxSearchBarComponent } from './components/ngx-search-bar/ngx-search-bar.component';
 import { MatIconModule } from '@angular/material/icon';
-import { MatLegacyButtonModule as MatButtonModule } from '@angular/material/legacy-button';
-import { MatLegacyChipsModule as MatChipsModule } from '@angular/material/legacy-chips';
-import { MatLegacyMenuModule as MatMenuModule } from '@angular/material/legacy-menu';
-import { MatLegacyProgressSpinnerModule as MatProgressSpinnerModule } from '@angular/material/legacy-progress-spinner';
+import { MatButtonModule } from '@angular/material/button';
+import { MatChipsModule } from '@angular/material/chips';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { NgxSearchBarComponent } from './components/ngx-search-bar/ngx-search-bar.component';
 import { HttpClientModule } from '@angular/common/http';
 import { MatBadgeModule } from '@angular/material/badge';
 import { DATA_FOR_SEARCH_BAR } from './utils/DATA_FOR_SEARCH_BAR';
-import { Router } from '@angular/router';
-import {MatLegacyPaginatorModule as MatPaginatorModule} from '@angular/material/legacy-paginator';
+import { MatPaginatorModule} from '@angular/material/paginator';
+import { RouterModule } from '@angular/router';
 
 @NgModule({
   declarations: [
@@ -22,6 +21,7 @@ import {MatLegacyPaginatorModule as MatPaginatorModule} from '@angular/material/
     CommonModule,
     FormsModule,
     ReactiveFormsModule,
+    RouterModule.forRoot([]),
     HttpClientModule,
     MatIconModule,
     MatButtonModule,

@@ -1,12 +1,12 @@
 import { FactoryInject } from './../../utils/DATA_FOR_SEARCH_BAR';
-import { Component, EventEmitter, Inject, Input, OnDestroy, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Inject, inject, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { auditTime, Subject, takeUntil } from 'rxjs';
 import { NgxSearchBarService } from '../../ngx-search-bar.service';
 import { empty } from '../../utils/empty';
 import { DATA_FOR_SEARCH_BAR } from '../../utils/DATA_FOR_SEARCH_BAR';
 import { NgxFilter as NgxSearchBarFilter, NgxFilterValue, NgxPaginateOptions } from '../../interfaces/structures';
 import { LegacyPageEvent as PageEvent } from '@angular/material/legacy-paginator';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { FormControl } from '@angular/forms';
 
 @Component({
@@ -20,6 +20,12 @@ export class NgxSearchBarComponent implements OnInit, OnDestroy {
     private activatedRoute: ActivatedRoute,
     @Inject(DATA_FOR_SEARCH_BAR) private dataInject: FactoryInject,
   ) {
+    try {
+      this.router = inject(Router);
+    } catch (error) {
+
+      console.error({ error });
+    }
   }
 
   //#region Variables
@@ -42,6 +48,7 @@ export class NgxSearchBarComponent implements OnInit, OnDestroy {
   isLoading: boolean = false;
   destroy$: Subject<boolean> = new Subject<boolean>();
   queryParamsNotNUllForTemplate: Map<string, { friendlyName: string, value: { type: string, value: any } }> = new Map();
+  router: Router | null = null;
   //#endregion Variables
 
   ngOnInit(): void {
@@ -55,7 +62,32 @@ export class NgxSearchBarComponent implements OnInit, OnDestroy {
   }
 
   getQueryParamsFromUrl(): void {
+    const path = window.location.search || '?search=&filter1=filter1&filter2=true&filter3=fer&filter3=fer2&pageIndex=1&pageSize=25&filter3=fer'
+
+    let arr = path.replace('?', '').split('&')
+    const res = arr.reduce((acc: any, curr, index) => {
+      const aux: any = curr.split('=')
+      console.log(aux)
+      if (aux.length != 2) {
+        return acc;
+      }
+
+      if (acc[aux[0]]) {
+        if (typeof acc[aux[0]] == 'string') {
+          acc[aux[0]] = [acc[aux[0]], aux[1]]
+        } else {
+          acc[aux[0]].push(aux[1])
+        }
+      } else {
+        acc[aux[0]] = aux[1];
+      }
+      return acc;
+    }, {})
+    console.log(res)
+    const params1 = this.activatedRoute.snapshot;
+    console.log({ params1 });
     this.activatedRoute.queryParams.subscribe((params) => {
+      console.log({ params2: params });
       const keysParams = Object.keys(params)
       if (keysParams.length < 1) return;
       try {
@@ -73,25 +105,23 @@ export class NgxSearchBarComponent implements OnInit, OnDestroy {
         keysParams.filter(x => !paramsNotFilter.includes(x)).forEach((key) => {
           if (this.formFilter[key])
             if (Array.isArray(this.formFilter[key].value) && !Array.isArray(params[key])) {
-              this.formFilter[key].value =  [params[key]];
+              this.formFilter[key].value = [params[key]];
             } else {
               this.formFilter[key].value = params[key];
             }
-            // this.formFilter[key].value = params[key];
-
         });
       } catch (error) {
         alert('Url mal formada');
       }
       this.autoInit && this.search();
       this.formSearch.valueChanges
-      .pipe(
-        auditTime(1000),
-        takeUntil(this.destroy$)
-      )
-      .subscribe((value) => {
-        this.search();
-      });
+        .pipe(
+          auditTime(1000),
+          takeUntil(this.destroy$)
+        )
+        .subscribe((value) => {
+          this.search();
+        });
     });
   }
 
@@ -125,8 +155,8 @@ export class NgxSearchBarComponent implements OnInit, OnDestroy {
         next: (res) => {
           this.isLoading = false;
           this.loading.emit(this.isLoading);
-          if (this.isChangeUrl) {
-            this.dataInject.ROUTER!.navigate([], {
+          if (this.isChangeUrl && this.router) {
+            this.router!.navigate([], {
               queryParams: queryParams,
               replaceUrl: true,
             })
@@ -226,4 +256,6 @@ export class NgxSearchBarComponent implements OnInit, OnDestroy {
     this.paginatorOptions.pageIndex = e.pageIndex;
     this.search();
   }
+
+
 }
