@@ -1,6 +1,6 @@
 import { FactoryInject } from './../../utils/DATA_FOR_SEARCH_BAR';
 import { Component, EventEmitter, Inject, Input, OnDestroy, OnInit, Output } from '@angular/core';
-import { FormControl } from '@angular/forms';
+import { UntypedFormControl } from '@angular/forms';
 import { auditTime, Subject, takeUntil } from 'rxjs';
 import { NgxSearchBarService } from '../../ngx-search-bar.service';
 import { empty } from '../../utils/empty';
@@ -38,7 +38,7 @@ export class NgxSearchBarComponent implements OnInit, OnDestroy {
   @Output() formFilterChange: EventEmitter<any> = new EventEmitter<any>();
   @Output() data = new EventEmitter<unknown>();
   @Output() loading = new EventEmitter<boolean>();
-  formSearch = new FormControl('');
+  formSearch = new UntypedFormControl('');
   isLoading: boolean = false;
   destroy$: Subject<boolean> = new Subject<boolean>();
   queryParamsNotNUllForTemplate: Map<string, { friendlyName: string, value: { type: string, value: any } }> = new Map();
