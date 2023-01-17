@@ -1,6 +1,6 @@
 # Ngx Search Bar
 
-Paquete necesita de angular material para funcionar
+The package needs angular material to work
 
 ## Installation
 
@@ -55,8 +55,8 @@ export class AppModule { }
 
 ## Custom provider (IMPORTANT)
 
-Es necesario sobrescribir el provider DATA_FOR_SEARCH_BAR para que funcione el componente
-El provider debe tener la siguiente estructura:
+You need to override the DATA_FOR_SEARCH_BAR provider for the component to work
+The provider must have the following structure:
 
 ```typescript
 {
@@ -77,20 +77,20 @@ El provider debe tener la siguiente estructura:
 }
 ```
 
-## Datos de proveedor
+## Provider data
 
-| Nombre | Tipo | Descripción |
+| Name | Type | Description |
 | --- | --- | --- |
-| BASE_URL | string | Url base para las peticiones |
-| ROUTER | Router | Router de la aplicación (requerido si usa pagination) |
-| OPTIONS | Partial<NgxPaginateOptions> | Opciones de paginación |
+| BASE_URL | string | Base URL for Requests |
+| ROUTER | router | Application router (required if paging is used) |
+| OPTIONS | Partial< NgxPaginateOptions > | Pagination Options |
 
-## NgxPaginateOptions custom
+## Custom NgxPaginateOptions
 
-| Nombre | Tipo | Descripción |
+| Name | Type | Description |
 | --- | --- | --- |
-| overrideRecibePaginateParams | (res: any, callback: (recordCount: number, currentPage: number, pageSize: number) => void) => void | Función para sobrescribir la respuesta de la pagination hacer funcionar la pagination |
-| overrideSendPaginateParams | { length: string; pageIndex: string; pageSize: string;}; | Objeto para sobrescribir los parametros que se enviaran al backend |
+| overrideReceivePaginateParams | (res: any, callback: (recordCount: number, currentPage: number, pageSize: number) => void) => void | Function to override pagination response make pagination work |
+| overrideSendPaginateParams | { length: string; page index: string; pagesize: string;}; | Object to overwrite the parameters that will be sent to the backend |
 
 
 
@@ -106,37 +106,37 @@ Usage in templates is as simple as:
 ## Inputs
 | Name | Type | Default | Description |
 | --- | --- | --- | --- |
-| placeholder | string | 'Search here' | Placeholder del input |
-| title | string | 'Search' | Titulo del componente |
-| path | string | 'search' | Path para las peticiones |
-| isChangeUrl | boolean | false | Si se debe cambiar la url al hacer una busqueda |
-| formFilter | NgxSearchBarFilter | {} | Objeto para filtrar los datos |
-| withPaginator | boolean | false | Si se debe usar la paginación |
-| paginatorOptions | Partial< NgxPaginateOptions >  | {} | Opciones de la paginación |
-| withFilter | boolean | false | Si se debe usar el filtro |
-| autoInit | boolean | true | Si inicia al automáticamente a buscar |
-| nameInputSearch | string | 'search' | Nombre del input de busqueda que se enviara al backend |
-| withParamsClean | boolean | false | Si se debe envian parametros no vacios o nulos |
+| placeholder | string | 'Search here' | Entry placeholder |
+| title | string | 'Search' | Component Title |
+| path | string | search | Route for requests |
+| isChangeUrl | boolean | false | If the url should be changed when doing a search |
+| formFilter | NgxSearchBarFilter | {} | Object to filter the data |
+| withPaginator | boolean | false | Whether to use pagination |
+| paginatorOptions | Partial< NgxPaginateOptions > | {} | Pagination Options |
+| withFilter | boolean | false | Whether to use the filter |
+| autoInit | boolean | true | If it automatically starts searching |
+| nameInputSearch | string | search | Name of the search input to send to the backend |
+| withParamsClean | boolean | false | If necessary, non-empty or null parameters are sent |
 
 
 ## Outputs
 
-| Name | Type | Description |
+| Names | Type | Description |
 | --- | --- | --- |
-| data | unknown | Evento que se dispara cuando se recibe la data |
-| formFilterChange | unknown | Evento que se dispara cuando se cambia el filtro |
-| loading | boolean | Evento que se dispara cuando se cambia el estado de carga |
+| data | unknown | Event fired when data is received |
+| formFilterChange | unknown | Event triggered when filter is changed |
+| loading | boolean | Event fired when load state is changed |
 
 
 ## Slots 
 
 | Name | Description |
 | --- | --- |
-| filterMenu | Slot para el filtro aqui se debera color los input de filtro |
-| (en blanco) | Se rendizara entre la barra de busqueda y la paginacion |
-| buttons | Slot para los botones a lado del boton de filtro |
+| filterMenu | Filter slot here you should color the filter entries |
+| (blank) | It will appear between the search bar and the pagination |
+| buttons | Button slot next to filter button |
 
-Ejemplo de uso de slots
+Slots Usage Example
 
 ```html
 
