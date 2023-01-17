@@ -1,9 +1,9 @@
 <div class="ngx-search-bar">
   <div class="bar">
-    <div>
-      <h1>{{ title }}</h1>
+    <div class="bar-container">
+      <h1 class="title">{{ title }}</h1>
       <div class="content-input-search">
-        <button mat-icon-button>
+        <button (click)="search()" mat-icon-button>
           <mat-icon>search</mat-icon>
         </button>
         <input class="input-search" type="text" [formControl]="formSearch" />
@@ -11,40 +11,42 @@
           <mat-spinner class="spinner" [diameter]="20"></mat-spinner>
         </div>
       </div>
-    </div>
-    <div>
-      <ng-container *ngIf="activeFilter">
-        <mat-chip-list>
-          <mat-chip
-            [matBadge]="queryParamsNotNUllForTemplate.size || null"
-            mat-button
-            [matMenuTriggerFor]="menuRef"
-            ><mat-icon>filter_alt</mat-icon></mat-chip
+      <div class="bar-buttons">
+        <ng-content select="[buttons]"></ng-content>
+        
+        <ng-container *ngIf="withFilter">
+          <mat-chip-list>
+            <mat-chip
+              [matBadge]="queryParamsNotNUllForTemplate.size || null"
+              mat-button
+              [matMenuTriggerFor]="menuRef"
+              ><mat-icon>filter_alt</mat-icon></mat-chip
+            >
+          </mat-chip-list>
+          <mat-menu
+            #menuRef="matMenu"
+            x-position="after"
+            y-position="below"
+            [overlapTrigger]="false"
           >
-        </mat-chip-list>
-        <mat-menu
-          #menuRef="matMenu"
-          x-position="after"
-          y-position="below"
-          [overlapTrigger]="false"
-        >
-          <div
-            (click)="$event.stopPropagation()"
-            (keydown)="$event.stopPropagation()"
-          >
-            <ng-content select="[filterMenu]"></ng-content>
-          </div>
-          <div mat-menu-item [disableRipple]="true">
-            <button color="accent" mat-raised-button (click)="search()">
-              Aplicar filtros <mat-icon style="color: inherit">check</mat-icon>
-            </button>
-          </div>
-        </mat-menu>
-      </ng-container>
+            <div
+              (click)="$event.stopPropagation()"
+              (keydown)="$event.stopPropagation()"
+            >
+              <ng-content select="[filterMenu]"></ng-content>
+            </div>
+            <div mat-menu-item [disableRipple]="true">
+              <button color="accent" mat-raised-button (click)="search()">
+                Aplicar filtros <mat-icon style="color: inherit">check</mat-icon>
+              </button>
+            </div>
+          </mat-menu>
+        </ng-container>
+      </div>
     </div>
   </div>
-  <div class="params-container">
-    <mat-chip-list>
+  <div *ngIf="withFilter" class="params-container">
+    <mat-chip-list class="d-flex">
       <mat-chip
         *ngFor="let queryParam of queryParamsNotNUllForTemplate | keyvalue"
       >
@@ -58,19 +60,22 @@
       </mat-chip>
     </mat-chip-list>
   </div>
+  <div class="content">
+    <ng-content></ng-content>
+  </div>
 
   <mat-paginator
     *ngIf="withPaginator"
     #paginator
     class="demo-paginator"
     (page)="handlePageEvent($event)"
-    [length]="pageOptions.length"
-    [pageSize]="pageOptions.pageSize"
-    [disabled]="pageOptions.disabled"
-    [showFirstLastButtons]="pageOptions.showFirstLastButtons"
-    [pageSizeOptions]="pageOptions.sizeOptions || []"
-    [hidePageSize]="pageOptions.hidePageSize"
-    [pageIndex]="pageOptions.pageIndex"
+    [length]="paginatorOptions.length"
+    [pageSize]="paginatorOptions.pageSize"
+    [disabled]="paginatorOptions.disabled"
+    [showFirstLastButtons]="paginatorOptions.showFirstLastButtons"
+    [pageSizeOptions]="paginatorOptions.sizeOptions || []"
+    [hidePageSize]="paginatorOptions.hidePageSize"
+    [pageIndex]="paginatorOptions.pageIndex! - 1"
     aria-label="Select page"
   >
   </mat-paginator>

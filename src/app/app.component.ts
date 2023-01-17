@@ -29,4 +29,11 @@ export class AppComponent implements OnInit {
     }
   };
 
+  brands: any[] = []
+
+  getData(data: any): void {
+    console.log(data);
+    this.brands = data.data.results;
+  }
+
 }

@@ -11,7 +11,7 @@ export interface FactoryInject {
 export const defaultConfigNgxSearchBar: FactoryInject = {
   BASE_URL: 'https://jsonplaceholder.typicode.com/',
   OPTIONS: {
-    overrideRecibePaginateParams: (res: any , callback: (length: number, pageIndex: number, pageSize: number) => void) => {
+    overrideRecibePaginateParams: (res: any, callback: (length: number, pageIndex: number, pageSize: number) => void) => {
       callback(res.length, res.pageIndex, res.pageSize);
     }
   }
@@ -20,5 +20,5 @@ export const defaultConfigNgxSearchBar: FactoryInject = {
 export const DATA_FOR_SEARCH_BAR = new InjectionToken<FactoryInject>('Token de datos para la barra de búsqueda', {
   providedIn: 'root',
   factory: () => defaultConfigNgxSearchBar
-} 
+}
 );

@@ -1,5 +1,4 @@
-<!-- <ngx-dynamic-island></ngx-dynamic-island> -->
-<ngx-search-bar [isChangeUrl]="true" [(formFilter)]="filters">
+<ngx-search-bar title="Novisolutions" [withFilter]="true" (data)="getData($event)" path="brands" [isChangeUrl]="true" [(formFilter)]="filters">
   <div style="padding: 10px" filterMenu>
     <ng-container>
       <mat-form-field style="width: 100%">
@@ -20,4 +19,11 @@
       </mat-form-field>
     </ng-container>
   </div>
+  <div style="margin-top: 20px;">
+    <div *ngFor="let brand of brands">
+      <div>{{ brand.name }}</div>
+    </div>
+  </div>
 </ngx-search-bar>
+
+

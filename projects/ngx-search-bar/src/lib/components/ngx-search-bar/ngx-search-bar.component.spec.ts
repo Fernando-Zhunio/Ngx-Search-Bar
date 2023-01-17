@@ -115,7 +115,7 @@ describe('NgxSearchBarComponent', () => {
   })
 
   it('#validate options', () => {
-    component.pageOptions = {
+    component.paginatorOptions = {
       pageIndex: 20,
       pageSize: 150,
       disabled: false,
@@ -126,16 +126,16 @@ describe('NgxSearchBarComponent', () => {
       },
     }
     component.setOptionsPaginate();
-    expect(component.pageOptions.pageIndex).toBe(20);
-    expect(component.pageOptions.pageSize).toBe(150);
-    expect(component.pageOptions.disabled).toBeFalse(); 
-    expect(component.pageOptions.overrideSendPaginateParams!.pageIndex).toBe('page');
-    expect(component.pageOptions.overrideSendPaginateParams!.pageSize).toBe('size');
-    expect(component.pageOptions.overrideSendPaginateParams!.length).toBe('total');
-    expect(component.pageOptions.disabled).toBeFalse();
+    expect(component.paginatorOptions.pageIndex).toBe(20);
+    expect(component.paginatorOptions.pageSize).toBe(150);
+    expect(component.paginatorOptions.disabled).toBeFalse(); 
+    expect(component.paginatorOptions.overrideSendPaginateParams!.pageIndex).toBe('page');
+    expect(component.paginatorOptions.overrideSendPaginateParams!.pageSize).toBe('size');
+    expect(component.paginatorOptions.overrideSendPaginateParams!.length).toBe('total');
+    expect(component.paginatorOptions.disabled).toBeFalse();
     fixture.detectChanges();
 
-    expect(component.pageOptions.showFirstLastButtons).toBeTrue();
+    expect(component.paginatorOptions.showFirstLastButtons).toBeTrue();
   });
 
   it('#validate callback overrideRecibePaginateParams', () => {
@@ -145,7 +145,7 @@ describe('NgxSearchBarComponent', () => {
     expect(req.request.method).toBe('GET');
     req.flush({length: 100, pageIndex: 1, pageSize: 15});
     console.log({component: component['dataInject']})
-    expect(component.pageOptions.length).toBe(100);
+    expect(component.paginatorOptions.length).toBe(100);
   });
 
   it('#handlePageEvent', () => {
@@ -155,14 +155,13 @@ describe('NgxSearchBarComponent', () => {
     expect(req.request.method).toBe('GET');
     req.flush({length: 100, pageIndex: 1, pageSize: 15});
     console.log({component: component['dataInject']})
-    expect(component.pageOptions.length).toBe(100);
+    expect(component.paginatorOptions.length).toBe(100);
 
     component.handlePageEvent({length: 100, pageIndex: 1, pageSize: 15});
     const req2 = httpMock.expectOne('http://localhost:3000/posts?search=&pageIndex=2&pageSize=15');
     expect(req2.request.method).toBe('GET');
     req2.flush({length: 100, pageIndex: 2, pageSize: 15});
     console.log({component: component['dataInject']})
-    expect(component.pageOptions.length).toBe(100);
+    expect(component.paginatorOptions.length).toBe(100);
   });
-
 });
