@@ -1,13 +1,13 @@
 import { FactoryInject } from './../../utils/DATA_FOR_SEARCH_BAR';
 import { Component, EventEmitter, Inject, Input, OnDestroy, OnInit, Output } from '@angular/core';
-import { UntypedFormControl } from '@angular/forms';
 import { auditTime, Subject, takeUntil } from 'rxjs';
 import { NgxSearchBarService } from '../../ngx-search-bar.service';
 import { empty } from '../../utils/empty';
 import { DATA_FOR_SEARCH_BAR } from '../../utils/DATA_FOR_SEARCH_BAR';
 import { NgxFilter as NgxSearchBarFilter, NgxFilterValue, NgxPaginateOptions } from '../../interfaces/structures';
-import { PageEvent } from '@angular/material/paginator';
+import { LegacyPageEvent as PageEvent } from '@angular/material/legacy-paginator';
 import { ActivatedRoute } from '@angular/router';
+import { FormControl } from '@angular/forms';
 
 @Component({
   selector: 'ngx-search-bar',
@@ -38,7 +38,7 @@ export class NgxSearchBarComponent implements OnInit, OnDestroy {
   @Output() formFilterChange: EventEmitter<any> = new EventEmitter<any>();
   @Output() data = new EventEmitter<unknown>();
   @Output() loading = new EventEmitter<boolean>();
-  formSearch = new UntypedFormControl('');
+  formSearch = new FormControl('');
   isLoading: boolean = false;
   destroy$: Subject<boolean> = new Subject<boolean>();
   queryParamsNotNUllForTemplate: Map<string, { friendlyName: string, value: { type: string, value: any } }> = new Map();
