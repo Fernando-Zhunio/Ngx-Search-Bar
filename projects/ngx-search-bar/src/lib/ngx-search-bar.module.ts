@@ -1,3 +1,5 @@
+import { NgxSearchBarWithPaginatorComponent } from './components/ngx-search-bar-with-paginator/ngx-search-bar-with-paginator.component';
+import { RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -11,17 +13,16 @@ import { HttpClientModule } from '@angular/common/http';
 import { MatBadgeModule } from '@angular/material/badge';
 import { DATA_FOR_SEARCH_BAR } from './utils/DATA_FOR_SEARCH_BAR';
 import { MatPaginatorModule} from '@angular/material/paginator';
-import { RouterModule } from '@angular/router';
 
 @NgModule({
   declarations: [
-    NgxSearchBarComponent
+    NgxSearchBarComponent,
+    NgxSearchBarWithPaginatorComponent
   ],
   imports: [
     CommonModule,
     FormsModule,
     ReactiveFormsModule,
-    RouterModule.forRoot([]),
     HttpClientModule,
     MatIconModule,
     MatButtonModule,
@@ -30,9 +31,11 @@ import { RouterModule } from '@angular/router';
     MatBadgeModule,
     MatProgressSpinnerModule,
     MatPaginatorModule,
+    RouterModule,
   ],
   exports: [
     NgxSearchBarComponent,
+    NgxSearchBarWithPaginatorComponent,
   ],
   providers: [
     {

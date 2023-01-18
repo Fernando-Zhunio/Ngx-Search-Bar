@@ -3,7 +3,6 @@ import { Router } from "@angular/router";
 import { NgxPaginateOptions } from "../interfaces/structures";
 
 export interface FactoryInject {
-  ROUTER?: Router;
   BASE_URL: string;
   OPTIONS?: Partial<NgxPaginateOptions>
 }
@@ -11,8 +10,10 @@ export interface FactoryInject {
 export const defaultConfigNgxSearchBar: FactoryInject = {
   BASE_URL: 'https://jsonplaceholder.typicode.com/',
   OPTIONS: {
-    overrideRecibePaginateParams: (res: any, callback: (length: number, pageIndex: number, pageSize: number) => void) => {
-      callback(res.length, res.pageIndex, res.pageSize);
+    paramsResponse: {
+      length: 'recordCount',
+      pageIndex: 'currentPage',
+      pageSize: 'pageSize',
     }
   }
 }

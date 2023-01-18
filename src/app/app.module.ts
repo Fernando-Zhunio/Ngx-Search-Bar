@@ -17,7 +17,6 @@ import { NgxPaginateOptions } from 'ngx-search-bar';
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
-    RouterModule.forRoot([]),
     MatFormFieldModule,
     MatInputModule,
     FormsModule,
@@ -31,7 +30,7 @@ import { NgxPaginateOptions } from 'ngx-search-bar';
         return {
           BASE_URL: 'https://localhost:7124/api/',
           OPTIONS: {
-            overrideRecibePaginateParams: (res: any, callback) => {
+            paramsResponse: (res: any, callback) => {
               const { currentPage, recordCount, pageSize } = res.data;
               callback(recordCount, currentPage, pageSize);
             }

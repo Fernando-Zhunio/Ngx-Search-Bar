@@ -4,10 +4,11 @@ import { auditTime, Subject, takeUntil } from 'rxjs';
 import { NgxSearchBarService } from '../../ngx-search-bar.service';
 import { empty } from '../../utils/empty';
 import { DATA_FOR_SEARCH_BAR } from '../../utils/DATA_FOR_SEARCH_BAR';
-import { NgxFilter as NgxSearchBarFilter, NgxFilterValue, NgxPaginateOptions } from '../../interfaces/structures';
+import { NgxFilter as NgxSearchBarFilter, NgxFilterValue, NgxPaginateOptions, NgxSearchBarPaginateParams } from '../../interfaces/structures';
 import { LegacyPageEvent as PageEvent } from '@angular/material/legacy-paginator';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { FormControl } from '@angular/forms';
+import { convertStringQueryParamsToObject } from '../../utils/query-params';
 
 @Component({
   selector: 'ngx-search-bar',
@@ -17,15 +18,8 @@ import { FormControl } from '@angular/forms';
 export class NgxSearchBarComponent implements OnInit, OnDestroy {
   constructor(
     private searchBarService: NgxSearchBarService,
-    private activatedRoute: ActivatedRoute,
     @Inject(DATA_FOR_SEARCH_BAR) private dataInject: FactoryInject,
   ) {
-    try {
-      this.router = inject(Router);
-    } catch (error) {
-
-      console.error({ error });
-    }
   }
 
   //#region Variables
@@ -35,11 +29,16 @@ export class NgxSearchBarComponent implements OnInit, OnDestroy {
   @Input() isChangeUrl: boolean = false;
   @Input() formFilter: NgxSearchBarFilter = {};
   @Input() withPaginator: boolean = true;
-  @Input() paginatorOptions!: Partial<NgxPaginateOptions>;
   @Input() withFilter: boolean = false;
   @Input() autoInit: boolean = true;
   @Input() nameInputSearch: string = 'search';
   @Input() withParamsClean: boolean = true;
+  @Input() paramsRequest: NgxSearchBarPaginateParams = {
+    pageIndex: 'pageIndex',
+    pageSize: 'pageSize',
+    length: 'length',
+  }
+  @Input() paramsResponse: NgxSearchBarPaginateParams| undefined;
 
   @Output() formFilterChange: EventEmitter<any> = new EventEmitter<any>();
   @Output() data = new EventEmitter<unknown>();
@@ -48,12 +47,19 @@ export class NgxSearchBarComponent implements OnInit, OnDestroy {
   isLoading: boolean = false;
   destroy$: Subject<boolean> = new Subject<boolean>();
   queryParamsNotNUllForTemplate: Map<string, { friendlyName: string, value: { type: string, value: any } }> = new Map();
-  router: Router | null = null;
+  router: Router = new Router;
+  // activatedRouter: ActivatedRoute = new ActivatedRoute;
+
   //#endregion Variables
 
   ngOnInit(): void {
-    this.setOptionsPaginate(this.dataInject.OPTIONS);
+    // this.setOptionsPaginate(this.dataInject.OPTIONS);
     this.getQueryParamsFromUrl();
+    this.autoInit && this.search();
+    // console.log({ params: this.activatedRoute})
+    // this.activatedRouter.queryParams.pipe(takeUntil(this.destroy$)).subscribe((params) => {
+    //   console.log({ params });
+    // });
   }
 
   ngOnDestroy() {
@@ -61,90 +67,33 @@ export class NgxSearchBarComponent implements OnInit, OnDestroy {
     this.destroy$.unsubscribe();
   }
 
-  getQueryParamsFromUrl(): void {
-    const path = window.location.search || '?search=&filter1=filter1&filter2=true&filter3=fer&filter3=fer2&pageIndex=1&pageSize=25&filter3=fer'
-
-    let arr = path.replace('?', '').split('&')
-    const res = arr.reduce((acc: any, curr, index) => {
-      const aux: any = curr.split('=')
-      console.log(aux)
-      if (aux.length != 2) {
-        return acc;
-      }
-
-      if (acc[aux[0]]) {
-        if (typeof acc[aux[0]] == 'string') {
-          acc[aux[0]] = [acc[aux[0]], aux[1]]
-        } else {
-          acc[aux[0]].push(aux[1])
-        }
-      } else {
-        acc[aux[0]] = aux[1];
-      }
-      return acc;
-    }, {})
-    console.log(res)
-    const params1 = this.activatedRoute.snapshot;
-    console.log({ params1 });
-    this.activatedRoute.queryParams.subscribe((params) => {
-      console.log({ params2: params });
-      const keysParams = Object.keys(params)
-      if (keysParams.length < 1) return;
-      try {
-        const { pageIndex, pageSize } = this.paginatorOptions.overrideSendPaginateParams || {};
-        if (params[pageIndex!]) {
-          this.paginatorOptions.pageIndex = Number.parseInt(params[pageIndex!])
-        }
-        if (params[pageSize!]) {
-          this.paginatorOptions.pageSize = Number.parseInt(params[pageSize!])
-        }
-        if (params[this.nameInputSearch]) {
-          this.formSearch.setValue(params[this.nameInputSearch]);
-        }
-        const paramsNotFilter = [pageIndex, pageSize, this.nameInputSearch];
-        keysParams.filter(x => !paramsNotFilter.includes(x)).forEach((key) => {
-          if (this.formFilter[key])
-            if (Array.isArray(this.formFilter[key].value) && !Array.isArray(params[key])) {
-              this.formFilter[key].value = [params[key]];
-            } else {
-              this.formFilter[key].value = params[key];
-            }
-        });
-      } catch (error) {
-        alert('Url mal formada');
-      }
-      this.autoInit && this.search();
-      this.formSearch.valueChanges
-        .pipe(
-          auditTime(1000),
-          takeUntil(this.destroy$)
-        )
-        .subscribe((value) => {
-          this.search();
-        });
-    });
+  setParams() {
+    this.paramsRequest = this.paramsRequest || this.dataInject?.OPTIONS?.paramsRequest 
+    this.paramsResponse = this.paramsResponse || this.dataInject?.OPTIONS?.paramsResponse;
   }
 
-  setOptionsPaginate(options: NgxPaginateOptions | {} = {}): void {
-    const optionsAux = { ...this.paginatorOptions };
-    const optionsAux2: NgxPaginateOptions = {
-      length: 0,
-      pageIndex: 0,
-      pageSize: 15,
-      disabled: false,
-      showFirstLastButtons: true,
-      sizeOptions: [10, 25, 50, 100],
-      hidePageSize: false,
-      overrideRecibePaginateParams: undefined,
-      overrideSendPaginateParams: {
-        length: 'length',
-        pageIndex: 'pageIndex',
-        pageSize: 'pageSize',
-      },
-      ...options
-    }
-    this.paginatorOptions = { ...optionsAux2, ...optionsAux };
-  }
+
+
+  // setOptionsPaginate(options: NgxPaginateOptions | {} = {}): void {
+  //   const optionsAux = { ...this.paginatorOptions };
+  //   const optionsAux2: NgxPaginateOptions = {
+  //     length: 0,
+  //     pageIndex: 0,
+  //     pageSize: 15,
+  //     disabled: false,
+  //     showFirstLastButtons: true,
+  //     sizeOptions: [10, 25, 50, 100],
+  //     hidePageSize: false,
+  //     overrideRecibePaginateParams: undefined,
+  //     overrideSendPaginateParams: {
+  //       length: 'length',
+  //       pageIndex: 'pageIndex',
+  //       pageSize: 'pageSize',
+  //     },
+  //     ...options
+  //   }
+  //   this.paginatorOptions = { ...optionsAux2, ...optionsAux };
+  // }
 
   search(params: { [key: string]: number } = {}) {
     this.isLoading = true;
@@ -155,16 +104,17 @@ export class NgxSearchBarComponent implements OnInit, OnDestroy {
         next: (res) => {
           this.isLoading = false;
           this.loading.emit(this.isLoading);
-          if (this.isChangeUrl && this.router) {
+          if (this.isChangeUrl) {
             this.router!.navigate([], {
               queryParams: queryParams,
               replaceUrl: true,
-            })
+            });
+
+            // changeQueryParamsUrl(queryParams);
           }
           this.data.emit(res);
-          if (this.withPaginator && this.dataInject.OPTIONS?.overrideRecibePaginateParams) {
-            this.dataInject.OPTIONS?.overrideRecibePaginateParams(res, this.bindRecibeData.bind(this));
-            console.log({ page: this.paginatorOptions });
+          if (this.withPaginator && this.dataInject.OPTIONS?.paramsResponse) {
+             this.setDataResponse(res);
           }
         },
         error: (err) => {
@@ -175,7 +125,7 @@ export class NgxSearchBarComponent implements OnInit, OnDestroy {
     );
   }
 
-  bindRecibeData(length: number, pageIndex: number, pageSize: number): void {
+  setDataResponse(): void {
     this.paginatorOptions.length = length;
     this.paginatorOptions.pageIndex = pageIndex;
     this.paginatorOptions.pageSize = pageSize;
@@ -243,10 +193,11 @@ export class NgxSearchBarComponent implements OnInit, OnDestroy {
       [this.nameInputSearch]: this.formSearch.value,
       ...params,
       ...this.filterVerified(),
-      ...(this.withPaginator ? {
-        [this.paginatorOptions.overrideSendPaginateParams!.pageIndex]: this.paginatorOptions.pageIndex!,
-        [this.paginatorOptions.overrideSendPaginateParams!.pageSize]: this.paginatorOptions.pageSize,
-      } : {}),
+      // ...(this.withPaginator ? {
+      //   [this.paginatorOptions.overrideSendPaginateParams!.pageIndex]: this.paginatorOptions.pageIndex! + 1,
+      //   [this.paginatorOptions.overrideSendPaginateParams!.pageSize]: this.paginatorOptions.pageSize,
+      // } : {}
+      // ),
     };
   }
 
@@ -257,5 +208,30 @@ export class NgxSearchBarComponent implements OnInit, OnDestroy {
     this.search();
   }
 
+  getQueryParamsFromUrl(): void {
+    const url = `fernando.com${window.location.search}` ;
+    console.log(this.router.parseUrl(url))
+    const params = this.router.parseUrl(url).queryParams;
+    console.log({ params })
+    if (!params) return;
+    const keysParams = Object.keys(params)
+    if (keysParams.length < 1) return;
+    try {
+      if (params[this.nameInputSearch]) {
+        this.formSearch.setValue(params[this.nameInputSearch] as string);
+      }
+      const paramsNotFilter = [pageIndex, pageSize, this.nameInputSearch];
+      keysParams.filter(x => !paramsNotFilter.includes(x)).forEach((key) => {
+        if (this.formFilter[key])
+          if (Array.isArray(this.formFilter[key].value) && !Array.isArray(params[key])) {
+            this.formFilter[key].value = [params[key]];
+          } else {
+            this.formFilter[key].value = params[key];
+          }
+      });
+    } catch (error) {
+      console.log('Url mal');
+    }
+  }
 
 }

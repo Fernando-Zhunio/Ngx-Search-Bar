@@ -1,0 +1,18 @@
+<div>
+  <ngx-search-bar></ngx-search-bar>
+  
+  <mat-paginator
+  #paginator
+  class="demo-paginator"
+  (page)="handlePageEvent($event)"
+  [length]="paginatorEvent.length"
+  [pageSize]="paginatorEvent.pageSize"
+  [disabled]="paginatorOptions.disabled"
+  [showFirstLastButtons]="paginatorOptions.showFirstLastButtons"
+  [pageSizeOptions]="paginatorOptions.sizeOptions || []"
+  [hidePageSize]="paginatorOptions.hidePageSize"
+  [pageIndex]="paginatorEvent.pageIndex! - 1"
+  aria-label="Select page"
+>
+</mat-paginator>
+</div>
