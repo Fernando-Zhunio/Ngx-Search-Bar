@@ -1,11 +1,34 @@
 {
-  "name": "ngx-search-bar",
+  "name": "ngx-search-bar-fz",
   "version": "0.0.1",
   "peerDependencies": {
-    "@angular/common": "^13.3.0",
-    "@angular/core": "^13.3.0"
+    "@angular/common": "^15.1.0",
+    "@angular/core": "^15.1.0"
   },
   "dependencies": {
     "tslib": "^2.3.0"
+  },
+  "autor": {
+    "name": "Fernando Zhunio Reyes",
+    "email": "fzhunio@hotmail.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Fernando-Zhunio/Ngx-Search-Bar"
+  },
+  "keywords": [
+    "angular",
+    "search",
+    "bar",
+    "angular 15",
+    "angular material",
+    "ng",
+    "ngx",
+    "buscador",
+    "barra",
+    "barra de busqueda"
+  ],
+  "bugs": {
+    "url": "https://github.com/Fernando-Zhunio/Ngx-Search-Bar/issues"
   }
 }

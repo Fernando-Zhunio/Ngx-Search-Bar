@@ -1,4 +1,3 @@
-import { NgxSearchBarWithPaginatorComponent } from './components/ngx-search-bar-with-paginator/ngx-search-bar-with-paginator.component';
 import { RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
@@ -17,7 +16,6 @@ import { MatPaginatorModule} from '@angular/material/paginator';
 @NgModule({
   declarations: [
     NgxSearchBarComponent,
-    NgxSearchBarWithPaginatorComponent
   ],
   imports: [
     CommonModule,
@@ -35,13 +33,11 @@ import { MatPaginatorModule} from '@angular/material/paginator';
   ],
   exports: [
     NgxSearchBarComponent,
-    NgxSearchBarWithPaginatorComponent,
   ],
   providers: [
     {
       provide: DATA_FOR_SEARCH_BAR,
       useValue: {
-          ROUTER: { navigate(_a: never[], _b: { queryParams: { [x: string]: any; }; replaceUrl: true; }): void { alert('Please inject provider de Router with token DATA_FOR_SEARCH_BAR for use input isChangeUrl to true, in component NgxSearchBarComponent'); throw 'Please inject provider de Router with token DATA_FOR_SEARCH_BAR' } },
           BASE_URL: 'https://jsonplaceholder.typicode.com/'
       },
     }

@@ -1,24 +1,149 @@
-# NgxSearchBar
+# Ngx Search Bar with angular material
 
-This library was generated with [Angular CLI](https://github.com/angular/angular-cli) version 13.3.0.
+The package needs angular material to work
 
-## Code scaffolding
+## Installation
 
-Run `ng generate component component-name --project ngx-search-bar` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module --project ngx-search-bar`.
-> Note: Don't forget to add `--project ngx-search-bar` or else it will be added to the default project in your `angular.json` file. 
+To install this library, run:
 
-## Build
+```bash
+$ npm install ngx-search-bar --save
+```
 
-Run `ng build ngx-search-bar` to build the project. The build artifacts will be stored in the `dist/` directory.
+and then from your Angular `AppModule`:
 
-## Publishing
+```typescript
+import { BrowserModule } from "@angular/platform-browser";
+import { NgModule } from "@angular/core";
 
-After building your library with `ng build ngx-search-bar`, go to the dist folder `cd dist/ngx-search-bar` and run `npm publish`.
+import { AppComponent } from "./app.component";
 
-## Running unit tests
+// Import your library
+import {
+  DATA_FOR_SEARCH_BAR,
+  NgxSearchBarModule,
+} from "projects/ngx-search-bar/src/public-api";
 
-Run `ng test ngx-search-bar` to execute the unit tests via [Karma](https://karma-runner.github.io).
+@NgModule({
+  declarations: [AppComponent],
+  imports: [
+    BrowserModule,
 
-## Further help
+    // Specify your library as an import
+    NgxSearchBarModule,
+  ],
+  providers: [
+    {
+      provide: DATA_FOR_SEARCH_BAR,
+      useValue: {
+        BASE_URL: "https://localhost:7124/api/",
+      },
+    },
+  ],
+  bootstrap: [AppComponent],
+})
+export class AppModule {}
+```
 
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
+## Custom provider (IMPORTANT)
+
+You need to override the DATA_FOR_SEARCH_BAR provider for the component to work
+The provider must have the following structure:
+
+```typescript
+providers: [
+    {
+      provide: DATA_FOR_SEARCH_BAR,
+      useValue: {
+        BASE_URL: 'https://localhost:7124/api/',
+      }
+    },
+  ],
+```
+
+Usage in templates is as simple as:
+
+```html
+<ngx-search-bar
+  title="Novisolutions "
+  (data)="getData($event)"
+  path="brands"
+  [isChangeUrl]="true"
+  [(formFilter)]="filters"
+>
+</ngx-search-bar>
+```
+
+## Inputs
+
+| Name             | Type                          | Default       | Description                                         |
+| ---------------- | ----------------------------- | ------------- | --------------------------------------------------- |
+| placeholder      | string                        | 'Search here' | Entry placeholder                                   |
+| title            | string                        | 'Search'      | Component Title                                     |
+| path             | string                        | search        | Route for requests                                  |
+| isChangeUrl      | boolean                       | false         | If the url should be changed when doing a search    |
+| formFilter       | NgxSearchBarFilter            | {}            | Object to filter the data                           |                      
+| withFilter       | boolean                       | false         | Whether to use the filter                           |
+| autoInit         | boolean                       | true          | If it automatically starts searching                |
+| nameInputSearch  | string                        | search        | Name of the search input to send to the backend     |
+| withParamsClean  | boolean                       | false         | If necessary, non-empty or null parameters are sent |
+
+## Outputs
+
+| Names            | Type    | Description                            |
+| ---------------- | ------- | -------------------------------------- |
+| data             | unknown | Event fired when data is received      |
+| formFilterChange | unknown | Event triggered when filter is changed |
+| loading          | boolean | Event fired when load state is changed |
+
+## Slots
+
+| Name       | Description                                              |
+| ---------- | -------------------------------------------------------- |
+| filterMenu | Filter slot here you should color the filter entries     |
+| (blank)    | It will appear between the search bar and the pagination |
+| buttons    | Button slot next to filter button                        |
+
+Slots Usage Example
+
+```html
+<ngx-search-bar
+  title="Novisolutions "
+  (data)="getData($event)"
+  path="brands"
+  [isChangeUrl]="true"
+  [(formFilter)]="filters"
+>
+  <!-- Aqui va los inputs de filtro -->
+  <div style="padding: 10px" filterMenu>
+    <ng-container>
+      <mat-form-field style="width: 100%">
+        <mat-label>Search</mat-label>
+        <input matInput type="text" [(ngModel)]="filters['filter1'].value" />
+      </mat-form-field>
+      <mat-form-field style="width: 100%">
+        <mat-label>Search</mat-label>
+        <input matInput type="text" [(ngModel)]="filters['filter2'].value" />
+      </mat-form-field>
+      <mat-form-field appearance="fill">
+        <mat-label>Toppings</mat-label>
+        <mat-select [(ngModel)]="filters['filter3'].value" multiple>
+          <mat-option value="fer">fer</mat-option>
+          <mat-option value="fer2">fer2</mat-option>
+          <mat-option value="fer3">fer3</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </ng-container>
+  </div>
+
+  <!-- Aqui va entre la paginacion y la barra -->
+  <div style="margin-top: 20px;">
+    <div *ngFor="let brand of brands">
+      <div>{{ brand.name }}</div>
+    </div>
+  </div>
+</ngx-search-bar>
+```
+## Example img 
+
+![Example](/forReadme.jpg)

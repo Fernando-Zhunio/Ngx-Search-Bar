@@ -3,7 +3,6 @@ import { HttpClient } from '@angular/common/http';
 import { Inject, Injectable } from '@angular/core';
 import type { Observable } from 'rxjs';
 import { DATA_FOR_SEARCH_BAR, FactoryInject } from './utils/DATA_FOR_SEARCH_BAR';
-import { NgxSearchBarPaginateParams } from '../public-api';
 
 @Injectable({
   providedIn: 'root'

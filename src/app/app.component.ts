@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 // import { FormControl } from '@angular/forms';
-import { NgxFilter } from 'projects/ngx-search-bar/src/public-api';
+import { NgxSearchBarFilter } from 'projects/ngx-search-bar/src/public-api';
 
 @Component({
   selector: 'app-root',
@@ -14,14 +14,14 @@ export class AppComponent implements OnInit {
   ngOnInit(): void {
   }
 
-  filters: NgxFilter = {
+  filters: NgxSearchBarFilter = {
     'filter1': {
       friendlyName: 'Tiendas',
-      value: 'filter1'
+      value: ''
     },
     'filter2': {
       friendlyName: 'Celulares',
-      value: true
+      value: false
     },
     'filter3': {
       friendlyName: 'Categorias',

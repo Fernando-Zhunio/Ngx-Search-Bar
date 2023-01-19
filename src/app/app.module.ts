@@ -6,9 +6,7 @@ import { DATA_FOR_SEARCH_BAR, NgxSearchBarModule } from 'projects/ngx-search-bar
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { FormsModule } from '@angular/forms';
 import { MatInputModule } from '@angular/material/input';
-import { Router, RouterModule } from '@angular/router';
 import {MatSelectModule} from '@angular/material/select';
-import { NgxPaginateOptions } from 'ngx-search-bar';
 
 @NgModule({
   declarations: [
@@ -26,18 +24,9 @@ import { NgxPaginateOptions } from 'ngx-search-bar';
   providers: [
     {
       provide: DATA_FOR_SEARCH_BAR,
-      useFactory: (router: Router) => {
-        return {
-          BASE_URL: 'https://localhost:7124/api/',
-          OPTIONS: {
-            paramsResponse: (res: any, callback) => {
-              const { currentPage, recordCount, pageSize } = res.data;
-              callback(recordCount, currentPage, pageSize);
-            }
-          } as Partial<NgxPaginateOptions>
-        }
-      },
-      deps: [Router]
+      useValue: {
+        BASE_URL: 'https://localhost:7124/api/',
+      }
     },
   ],
   bootstrap: [AppComponent]
