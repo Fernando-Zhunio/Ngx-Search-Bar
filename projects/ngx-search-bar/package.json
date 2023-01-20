@@ -1,6 +1,6 @@
 {
   "name": "ngx-search-bar-fz",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "peerDependencies": {
     "@angular/common": "^15.x",
     "@angular/core": "^15.x"
@@ -14,7 +14,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/Fernando-Zhunio/Ngx-Search-Bar"
+    "url": "https://github.com/Fernando-Zhunio/Ngx-Search-Bar/tree/v15-branch"
   },
   "keywords": [
     "angular",
