@@ -4,7 +4,7 @@ import { debounceTime, Subject, takeUntil } from 'rxjs';
 import { NgxSearchBarService } from '../../ngx-search-bar.service';
 import { empty } from '../../utils/empty';
 import { DATA_FOR_SEARCH_BAR } from '../../utils/DATA_FOR_SEARCH_BAR';
-import { NgxSearchBarFilter, NgxFilterValue } from '../../interfaces/structures';
+import { NgxSearchBarFilter, NgxSearchBarFilterValue } from '../../interfaces/structures';
 import { Router } from '@angular/router';
 import { FormControl } from '@angular/forms';
 
@@ -32,13 +32,12 @@ export class NgxSearchBarComponent implements OnInit, OnDestroy {
   @Input() withParamsClean: boolean = true;
 
   @Output() filtersChange: EventEmitter<any> = new EventEmitter<any>();
-  @Output() data = new EventEmitter<unknown>();
+  @Output() data = new EventEmitter<any>();
   @Output() loading = new EventEmitter<boolean>();
-  formSearch: FormControl = new FormControl();
+  formSearch: FormControl = new FormControl('');
   isLoading: boolean = false;
   destroy$: Subject<boolean> = new Subject<boolean>();
   queryParamsNotNUllForTemplate: Map<string, { friendlyName: string, value: { type: string, value: any } }> = new Map();
-  router: Router = new Router;
   //#endregion Variables
 
   ngOnInit(): void {
@@ -46,9 +45,9 @@ export class NgxSearchBarComponent implements OnInit, OnDestroy {
     this.autoInit && this.search();
     this.formSearch.valueChanges
       .pipe(
-        debounceTime(300), 
-        takeUntil(this.destroy$), 
-        )
+        debounceTime(300),
+        takeUntil(this.destroy$),
+      )
       .subscribe((value) => {
         this.search()
       });
@@ -69,10 +68,7 @@ export class NgxSearchBarComponent implements OnInit, OnDestroy {
           this.isLoading = false;
           this.loading.emit(this.isLoading);
           if (this.isChangeUrl) {
-            this.router!.navigate([], {
-              queryParams: queryParams,
-              replaceUrl: true,
-            });
+            this.setQueryParamsForUrl(queryParams);
           }
           this.data.emit(res);
         },
@@ -84,8 +80,17 @@ export class NgxSearchBarComponent implements OnInit, OnDestroy {
     );
   }
 
-  filterVerified(): { [key: string]: NgxFilterValue } {
-    const filtersOverride: { [key: string]: NgxFilterValue } = {};
+  setQueryParamsForUrl(params: { [key: string]: NgxSearchBarFilterValue }) {
+    let searchParams = new URLSearchParams();
+    Object.keys(params).forEach(key => {
+      const value = (Array.isArray(params[key]) ? JSON.stringify(params[key]) : params[key]) as string;
+      searchParams.set(key, value)
+    })
+    window.history.replaceState(null, '', `?${searchParams.toString()}`);
+  }
+
+  filterVerified(): { [key: string]: NgxSearchBarFilterValue } {
+    const filtersOverride: { [key: string]: NgxSearchBarFilterValue } = {};
     this.queryParamsNotNUllForTemplate.clear();
     for (const key in this.filters) {
       if (!empty(this.filters[key].value)) {
@@ -94,20 +99,20 @@ export class NgxSearchBarComponent implements OnInit, OnDestroy {
       }
     }
     return this.withParamsClean ? filtersOverride : Object.keys(this.filters)
-      .reduce((acc: { [key: string]: NgxFilterValue }, curr) => {
+      .reduce((acc: { [key: string]: NgxSearchBarFilterValue }, curr) => {
         acc[curr] = this.filters[curr].value
         return acc;
       }, {});
   }
 
-  getStructureForTemplate(struct: { friendlyName: string, value: NgxFilterValue }): { friendlyName: string, value: { type: string, value: any } } {
+  getStructureForTemplate(struct: { friendlyName: string, value: NgxSearchBarFilterValue }): { friendlyName: string, value: { type: string, value: any } } {
     return {
       friendlyName: struct.friendlyName,
       value: this.forStructure(struct.value)
     }
   }
 
-  forStructure(value: NgxFilterValue): any {
+  forStructure(value: NgxSearchBarFilterValue): any {
     const type = typeof value;
     if (type === 'string' || type === 'number') {
       return {
@@ -141,7 +146,7 @@ export class NgxSearchBarComponent implements OnInit, OnDestroy {
     this.search();
   }
 
-  getQueryParams(params: { [key: string]: NgxFilterValue } = {}): { [key: string]: NgxFilterValue } {
+  getQueryParams(params: { [key: string]: NgxSearchBarFilterValue } = {}): { [key: string]: NgxSearchBarFilterValue } {
     return {
       [this.nameInputSearch]: this.formSearch.value,
       ...params,
@@ -150,8 +155,7 @@ export class NgxSearchBarComponent implements OnInit, OnDestroy {
   }
 
   getQueryParamsFromUrl(): void {
-    const url = `fernando.com${window.location.search}`;
-    const params = this.router.parseUrl(url).queryParams;
+    const params = Object.fromEntries(new URLSearchParams(window.location.search));
     if (!params) return;
     try {
       if (params.hasOwnProperty(this.nameInputSearch)) {
@@ -159,8 +163,8 @@ export class NgxSearchBarComponent implements OnInit, OnDestroy {
       }
       Object.keys(this.filters).forEach((key) => {
         if (params.hasOwnProperty(key)) {
-          if (Array.isArray(this.filters[key].value) && !Array.isArray(params[key])) {
-            this.filters[key].value = [params[key]];
+          if (params[key].match(/(^\[.+(\])$)|true|false/)) {
+            this.filters[key].value = JSON.parse(params[key]);
           } else {
             this.filters[key].value = params[key];
           }

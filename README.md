@@ -7,7 +7,7 @@ The package needs angular material to work
 To install this library, run:
 
 ```bash
-$ npm install ngx-search-bar --save
+$ npm install ngx-search-bar-fz --save
 ```
 
 and then from your Angular `AppModule`:
