@@ -1,6 +1,6 @@
 # Ngx Search Bar with angular material
 
-The package needs angular material to work
+The package needs angular material to work (This package is compatible with angular 15)
 
 ## Installation
 
@@ -22,7 +22,7 @@ import { AppComponent } from "./app.component";
 import {
   DATA_FOR_SEARCH_BAR,
   NgxSearchBarModule,
-} from "projects/ngx-search-bar/src/public-api";
+} from "ngx-search-bar-fz";
 
 @NgModule({
   declarations: [AppComponent],
