@@ -14,26 +14,6 @@ export class AppComponent implements OnInit {
   ngOnInit(): void {
   }
 
-  filters: NgxSearchBarFilter = {
-    'filter1': {
-      friendlyName: 'Tiendas',
-      value: ''
-    },
-    'filter2': {
-      friendlyName: 'Celulares',
-      value: false
-    },
-    'filter3': {
-      friendlyName: 'Categorias',
-      value: []
-    }
-  };
-
-  brands: any[] = []
-
-  getData(data: any): void {
-    console.log(data);
-    this.brands = data.data.results;
-  }
+  
 
 }

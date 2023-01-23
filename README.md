@@ -19,10 +19,7 @@ import { NgModule } from "@angular/core";
 import { AppComponent } from "./app.component";
 
 // Import your library
-import {
-  DATA_FOR_SEARCH_BAR,
-  NgxSearchBarModule,
-} from "ngx-search-bar-fz";
+import { DATA_FOR_SEARCH_BAR, NgxSearchBarModule } from "ngx-search-bar-fz";
 
 @NgModule({
   declarations: [AppComponent],
@@ -37,6 +34,14 @@ import {
       provide: DATA_FOR_SEARCH_BAR,
       useValue: {
         BASE_URL: "https://localhost:7124/api/",
+        OPTIONS: {
+          customBtnApplyFilter: {
+            text: "Apply",
+            color: "primary",
+            class: "btn-apply-filter",
+            icon: "done",
+          },
+        },
       },
     },
   ],
@@ -56,6 +61,14 @@ providers: [
       provide: DATA_FOR_SEARCH_BAR,
       useValue: {
         BASE_URL: 'https://localhost:7124/api/',
+        OPTIONS: {
+          customBtnApplyFilter: {
+            text: 'Apply',
+            color: 'primary',
+            class: 'btn-apply-filter',
+            icon: 'done',
+          }
+        }
       }
     },
   ],
@@ -69,40 +82,40 @@ Usage in templates is as simple as:
   (data)="getData($event)"
   path="brands"
   [isChangeUrl]="true"
-  [(formFilter)]="filters"
+  [(filters)]="filters"
 >
 </ngx-search-bar>
 ```
 
 ## Inputs
 
-| Name             | Type                          | Default       | Description                                         |
-| ---------------- | ----------------------------- | ------------- | --------------------------------------------------- |
-| placeholder      | string                        | 'Search here' | Entry placeholder                                   |
-| title            | string                        | 'Search'      | Component Title                                     |
-| path             | string                        | search        | Route for requests                                  |
-| isChangeUrl      | boolean                       | false         | If the url should be changed when doing a search    |
-| formFilter       | NgxSearchBarFilter            | {}            | Object to filter the data                           |                      
-| withFilter       | boolean                       | false         | Whether to use the filter                           |
-| autoInit         | boolean                       | true          | If it automatically starts searching                |
-| nameInputSearch  | string                        | search        | Name of the search input to send to the backend     |
-| withParamsClean  | boolean                       | false         | If necessary, non-empty or null parameters are sent |
+| Name                 | Type                                                            | Default                                                               | Description                                         |
+| -------------------- | --------------------------------------------------------------- | --------------------------------------------------------------------- | --------------------------------------------------- |
+| placeholder          | string                                                          | 'Search here'                                                         | Entry placeholder                                   |
+| title                | string                                                          | 'Search'                                                              | Component Title                                     |
+| path                 | string                                                          | search                                                                | Route for requests                                  |
+| isChangeUrl          | boolean                                                         | false                                                                 | If the url should be changed when doing a search    |
+| filters           | NgxSearchBarFilter                                              | {}                                                                    | Object to filter the data                           |
+| withFilter           | boolean                                                         | false                                                                 | Whether to use the filter                           |
+| autoInit             | boolean                                                         | true                                                                  | If it automatically starts searching                |
+| nameInputSearch      | string                                                          | search                                                                | Name of the search input to send to the backend     |
+| withParamsClean      | boolean                                                         | false                                                                 | If necessary, non-empty or null parameters are sent |
+| customBtnApplyFilter | { text?: string, class?: string, color?: string, icon?: string} | { text: 'Aplicar Filtros', class: '', color: 'accent', icon: 'done' } | Custom button to apply filters                      |
 
 ## Outputs
 
 | Names            | Type    | Description                            |
 | ---------------- | ------- | -------------------------------------- |
 | data             | unknown | Event fired when data is received      |
-| formFilterChange | unknown | Event triggered when filter is changed |
+| filtersChange | unknown | Event triggered when filter is changed |
 | loading          | boolean | Event fired when load state is changed |
 
 ## Slots
 
-| Name       | Description                                              |
-| ---------- | -------------------------------------------------------- |
-| filterMenu | Filter slot here you should color the filter entries     |
-| (blank)    | It will appear between the search bar and the pagination |
-| buttons    | Button slot next to filter button                        |
+| Name       | Description                                          |
+| ---------- | ---------------------------------------------------- |
+| filterMenu | Filter slot here you should color the filter entries |
+| buttons    | Button slot next to filter button                    |
 
 Slots Usage Example
 
@@ -112,7 +125,7 @@ Slots Usage Example
   (data)="getData($event)"
   path="brands"
   [isChangeUrl]="true"
-  [(formFilter)]="filters"
+  [(filters)]="filters"
 >
   <!-- Aqui va los inputs de filtro -->
   <div style="padding: 10px" filterMenu>
@@ -144,6 +157,114 @@ Slots Usage Example
   </div>
 </ngx-search-bar>
 ```
-## Example img 
+
+## Example img
 
 ![Example](/forReadme.jpg)
+
+## How to use with MatPaginator
+
+```html
+<ngx-search-bar
+  [isChangeUrl]="true"
+  [(filters)]="filters"
+  [nameInputSearch]="'name'"
+  placeholder="Buscar productos"
+  [withFilter]="true"
+  title="Productos"
+  (data)="getData($event)"
+  path="products-admin/products"
+>
+  <ng-container filterMenu>
+    <div class="filter-menu">
+      <mat-form-field>
+        <input matInput placeholder="#" [(ngModel)]="filters['id'].value" />
+      </mat-form-field>
+      <mat-form-field>
+        <input
+          matInput
+          placeholder="Codigo"
+          [(ngModel)]="filters['code'].value"
+        />
+      </mat-form-field>
+      <mat-form-field>
+        <input
+          matInput
+          placeholder="Codigo Alterno"
+          [(ngModel)]="filters['code_alt'].value"
+        />
+      </mat-form-field>
+    </div>
+  </ng-container>
+  <ng-container buttons>
+    <mat-chip-set>
+      <mat-chip
+        color="create"
+        *ngxPermissionsOnly="permission_create"
+        [routerLink]="['/admin-products/productos/create']"
+        ><i class="fa-solid fa-plus"></i> Producto</mat-chip
+      >
+    </mat-chip-set>
+  </ng-container>
+</ngx-search-bar>
+
+<mat-paginator
+  [length]="paginator.length"
+  [pageSize]="paginator.pageSize"
+  [pageSizeOptions]="[10,20,30,40,50]"
+  (page)="changePaginator($event)"
+>
+</mat-paginator>
+```
+
+```typescript
+@Component({
+  selector: 'app-productos',
+  templateUrl: './productos.component.html',
+  styleUrls: ['./productos.component.css'],
+})
+export class ProductosComponent {
+  constructor(
+    private methods_http: MethodsHttpService,
+  ) { }
+
+  @ViewChild(NgxSearchBarComponent) searchBar: NgxSearchBarComponent
+ filters: NgxSearchBarFilter = {
+    id: {
+      friendlyName: '#',
+      value: null
+    },
+    code: {
+      friendlyName: "Código",
+      value: null,
+    },
+    code_alt: {
+      friendlyName: "C Alt.",
+      value: null
+    },
+  }
+
+   paginator: PageEvent = {
+    pageIndex: 0,
+    length: 0,
+    pageSize: 0
+  }
+
+  products: Product[] = [];
+
+   getData(event: RequestPaginate<Product>) {
+    this.products = event.data.data
+    this.paginator.length = event.data.total
+  }
+
+   changePaginator(event: PageEvent): void {
+    this.paginator = event
+    const params = {
+      pageSize: this.paginator.pageSize,
+      page: this.paginator.pageIndex + 1
+    }
+    this.searchBar.search(params)
+  }
+```
+
+

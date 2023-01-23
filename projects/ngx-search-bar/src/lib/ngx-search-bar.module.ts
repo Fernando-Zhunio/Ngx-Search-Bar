@@ -35,12 +35,12 @@ import { MatPaginatorModule} from '@angular/material/paginator';
     NgxSearchBarComponent,
   ],
   providers: [
-    {
-      provide: DATA_FOR_SEARCH_BAR,
-      useValue: {
-          BASE_URL: 'https://jsonplaceholder.typicode.com/'
-      },
-    }
+    // {
+    //   provide: DATA_FOR_SEARCH_BAR,
+    //   useValue: {
+    //       BASE_URL: 'https://jsonplaceholder.typicode.com/'
+    //   },
+    // }
   ]
 })
 export class NgxSearchBarModule { }

@@ -1,6 +1,6 @@
 {
   "name": "ngx-search-bar-fz",
-  "version": "0.0.3",
+  "version": "0.0.5",
   "peerDependencies": {
     "@angular/common": "^15.x",
     "@angular/core": "^15.x"
@@ -20,6 +20,9 @@
     "angular",
     "search",
     "bar",
+    "search bar",
+    "ngx-search-bar-fz",
+    "ngx-search-bar",
     "angular 15",
     "angular material",
     "ng",

@@ -1,11 +1,10 @@
-import { FactoryInject } from './../../utils/DATA_FOR_SEARCH_BAR';
+import { NgxSearchBarProvider } from './../../utils/DATA_FOR_SEARCH_BAR';
 import { Component, EventEmitter, Inject, Input, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
 import { debounceTime, Subject, takeUntil } from 'rxjs';
 import { NgxSearchBarService } from '../../ngx-search-bar.service';
 import { empty } from '../../utils/empty';
 import { DATA_FOR_SEARCH_BAR } from '../../utils/DATA_FOR_SEARCH_BAR';
 import { NgxSearchBarFilter, NgxSearchBarFilterValue } from '../../interfaces/structures';
-import { Router } from '@angular/router';
 import { FormControl } from '@angular/forms';
 
 @Component({
@@ -16,7 +15,7 @@ import { FormControl } from '@angular/forms';
 export class NgxSearchBarComponent implements OnInit, OnDestroy {
   constructor(
     private searchBarService: NgxSearchBarService,
-    @Inject(DATA_FOR_SEARCH_BAR) private dataInject: FactoryInject,
+    @Inject(DATA_FOR_SEARCH_BAR) private dataInject: NgxSearchBarProvider,
   ) {
   }
 
@@ -29,6 +28,12 @@ export class NgxSearchBarComponent implements OnInit, OnDestroy {
   @Input() withFilter: boolean = false;
   @Input() autoInit: boolean = true;
   @Input() nameInputSearch: string = 'search';
+  @Input() customBtnApplyFilter: {
+    text?: string,
+    class?: string,
+    color?: string,
+    icon?: string,
+  } = this.dataInject.OPTIONS?.customBtnApplyFilter!;
   @Input() withParamsClean: boolean = true;
 
   @Output() filtersChange: EventEmitter<any> = new EventEmitter<any>();
@@ -42,7 +47,7 @@ export class NgxSearchBarComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.getQueryParamsFromUrl();
-    this.autoInit && this.search();
+    this.autoInit ? this.search() : this.getQueryParams();
     this.formSearch.valueChanges
       .pipe(
         debounceTime(300),
@@ -86,7 +91,7 @@ export class NgxSearchBarComponent implements OnInit, OnDestroy {
       const value = (Array.isArray(params[key]) ? JSON.stringify(params[key]) : params[key]) as string;
       searchParams.set(key, value)
     })
-    window.history.replaceState(null, '', `?${searchParams.toString()}`);
+    window.history.replaceState(null, '', `${window.location.href.split('?')[0]}?${searchParams.toString()}`);
   }
 
   filterVerified(): { [key: string]: NgxSearchBarFilterValue } {
@@ -155,7 +160,9 @@ export class NgxSearchBarComponent implements OnInit, OnDestroy {
   }
 
   getQueryParamsFromUrl(): void {
-    const params = Object.fromEntries(new URLSearchParams(window.location.search));
+    const segmentUrl = window.location.href.split('?');
+    if (segmentUrl.length === 1) return;
+    const params = Object.fromEntries(new URLSearchParams(segmentUrl[1]));
     if (!params) return;
     try {
       if (params.hasOwnProperty(this.nameInputSearch)) {
