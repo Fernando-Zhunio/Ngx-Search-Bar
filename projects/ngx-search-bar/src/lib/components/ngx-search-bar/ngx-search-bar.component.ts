@@ -6,6 +6,7 @@ import { empty } from '../../utils/empty';
 import { DATA_FOR_SEARCH_BAR } from '../../utils/DATA_FOR_SEARCH_BAR';
 import { NgxSearchBarFilter, NgxSearchBarFilterValue } from '../../interfaces/structures';
 import { FormControl } from '@angular/forms';
+import { Location } from '@angular/common';
 
 @Component({
   selector: 'ngx-search-bar',
@@ -15,6 +16,7 @@ import { FormControl } from '@angular/forms';
 export class NgxSearchBarComponent implements OnInit, OnDestroy {
   constructor(
     private searchBarService: NgxSearchBarService,
+    private location: Location,
     @Inject(DATA_FOR_SEARCH_BAR) private dataInject: NgxSearchBarProvider,
   ) {
   }
@@ -91,7 +93,9 @@ export class NgxSearchBarComponent implements OnInit, OnDestroy {
       const value = (Array.isArray(params[key]) ? JSON.stringify(params[key]) : params[key]) as string;
       searchParams.set(key, value)
     })
-    window.history.replaceState(null, '', `${window.location.href.split('?')[0]}?${searchParams.toString()}`);
+    console.log(this.location.path())
+    this.location.replaceState(window.location.hash.split('?')[0],searchParams.toString())
+    // window.history.replaceState(null, '', `${window.location.href.split('?')[0]}?${searchParams.toString()}`);
   }
 
   filterVerified(): { [key: string]: NgxSearchBarFilterValue } {

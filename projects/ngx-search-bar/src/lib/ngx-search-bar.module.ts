@@ -10,7 +10,6 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { NgxSearchBarComponent } from './components/ngx-search-bar/ngx-search-bar.component';
 import { HttpClientModule } from '@angular/common/http';
 import { MatBadgeModule } from '@angular/material/badge';
-import { DATA_FOR_SEARCH_BAR } from './utils/DATA_FOR_SEARCH_BAR';
 import { MatPaginatorModule} from '@angular/material/paginator';
 
 @NgModule({
@@ -29,18 +28,12 @@ import { MatPaginatorModule} from '@angular/material/paginator';
     MatBadgeModule,
     MatProgressSpinnerModule,
     MatPaginatorModule,
-    RouterModule,
+    RouterModule.forRoot([]),
   ],
   exports: [
     NgxSearchBarComponent,
   ],
   providers: [
-    // {
-    //   provide: DATA_FOR_SEARCH_BAR,
-    //   useValue: {
-    //       BASE_URL: 'https://jsonplaceholder.typicode.com/'
-    //   },
-    // }
   ]
 })
 export class NgxSearchBarModule { }
