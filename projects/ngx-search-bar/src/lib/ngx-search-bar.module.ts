@@ -1,4 +1,3 @@
-import { RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -28,7 +27,6 @@ import { MatPaginatorModule} from '@angular/material/paginator';
     MatBadgeModule,
     MatProgressSpinnerModule,
     MatPaginatorModule,
-    RouterModule.forRoot([]),
   ],
   exports: [
     NgxSearchBarComponent,

@@ -48,9 +48,9 @@
               <ng-content select="[filterMenu]"></ng-content>
             </div>
             <div mat-menu-item [disableRipple]="true">
-              <button [color]="customBtnApplyFilter?.color || 'accent'" [class]="customBtnApplyFilter?.class" mat-raised-button (click)="search()">
-                {{customBtnApplyFilter?.text || 'Apply filters'}}
-                <mat-icon style="color: inherit">{{customBtnApplyFilter?.icon || 'check'}}</mat-icon>
+              <button [color]="customBtnApplyFilter.color || 'accent'" [class]="customBtnApplyFilter?.class" mat-raised-button (click)="search()">
+                {{customBtnApplyFilter.text || 'Apply filters'}}
+                <mat-icon style="color: inherit">{{customBtnApplyFilter.icon || 'check'}}</mat-icon>
               </button>
             </div>
           </mat-menu>

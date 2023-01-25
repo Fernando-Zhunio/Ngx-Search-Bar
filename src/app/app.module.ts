@@ -34,7 +34,7 @@ import { HashLocationStrategy, LocationStrategy } from '@angular/common';
     {
       provide: DATA_FOR_SEARCH_BAR,
       useValue: {
-        BASE_URL: 'https://localhost:7124/api/',
+        BASE_URL: 'https://jsonplaceholder.typicode.com/',
         OPTIONS: {
           customBtnApplyFilter: {
             text: 'Apply',

@@ -1,5 +1,5 @@
 import { NgxSearchBarProvider } from './../../utils/DATA_FOR_SEARCH_BAR';
-import { Component, EventEmitter, Inject, Input, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
+import { Component, EventEmitter, Inject, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { debounceTime, Subject, takeUntil } from 'rxjs';
 import { NgxSearchBarService } from '../../ngx-search-bar.service';
 import { empty } from '../../utils/empty';
@@ -35,7 +35,7 @@ export class NgxSearchBarComponent implements OnInit, OnDestroy {
     class?: string,
     color?: string,
     icon?: string,
-  } = this.dataInject.OPTIONS?.customBtnApplyFilter!;
+  } = this.dataInject?.OPTIONS?.customBtnApplyFilter!;
   @Input() withParamsClean: boolean = true;
 
   @Output() filtersChange: EventEmitter<any> = new EventEmitter<any>();
@@ -55,7 +55,7 @@ export class NgxSearchBarComponent implements OnInit, OnDestroy {
         debounceTime(300),
         takeUntil(this.destroy$),
       )
-      .subscribe((value) => {
+      .subscribe(() => {
         this.search()
       });
   }
@@ -79,7 +79,7 @@ export class NgxSearchBarComponent implements OnInit, OnDestroy {
           }
           this.data.emit(res);
         },
-        error: (err) => {
+        error: () => {
           this.isLoading = false;
           this.loading.emit(this.isLoading);
         }
@@ -95,7 +95,6 @@ export class NgxSearchBarComponent implements OnInit, OnDestroy {
     })
     console.log(this.location.path())
     this.location.replaceState(this.location.path().split('?')[0],searchParams.toString())
-    // window.history.replaceState(null, '', `${window.location.href.split('?')[0]}?${searchParams.toString()}`);
   }
 
   filterVerified(): { [key: string]: NgxSearchBarFilterValue } {
@@ -161,12 +160,17 @@ export class NgxSearchBarComponent implements OnInit, OnDestroy {
       ...params,
       ...this.filterVerified(),
     };
-  }
+  } 
 
   getQueryParamsFromUrl(): void {
     const segmentUrl = window.location.href.split('?');
     if (segmentUrl.length === 1) return;
+    // const params: any = new Proxy(new URLSearchParams(segmentUrl[1]), {
+    //   get: (target, prop) => target.get(prop as string)
+    // })
     const params = Object.fromEntries(new URLSearchParams(segmentUrl[1]));
+
+    console.log({params})
     if (!params) return;
     try {
       if (params.hasOwnProperty(this.nameInputSearch)) {

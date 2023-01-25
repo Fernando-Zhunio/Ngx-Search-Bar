@@ -1,4 +1,3 @@
-import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { Inject, Injectable } from '@angular/core';
 import type { Observable } from 'rxjs';
@@ -9,7 +8,6 @@ import { DATA_FOR_SEARCH_BAR, NgxSearchBarProvider } from './utils/DATA_FOR_SEAR
 })
 export class NgxSearchBarService {
 
-  router: Router = new Router()
   constructor(private http: HttpClient ,
     @Inject(DATA_FOR_SEARCH_BAR) private data: NgxSearchBarProvider)  { }
   
