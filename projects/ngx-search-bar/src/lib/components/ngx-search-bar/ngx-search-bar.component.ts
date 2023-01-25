@@ -94,7 +94,7 @@ export class NgxSearchBarComponent implements OnInit, OnDestroy {
       searchParams.set(key, value)
     })
     console.log(this.location.path())
-    this.location.replaceState(window.location.hash.split('?')[0],searchParams.toString())
+    this.location.replaceState(this.location.path().split('?')[0],searchParams.toString())
     // window.history.replaceState(null, '', `${window.location.href.split('?')[0]}?${searchParams.toString()}`);
   }
 
