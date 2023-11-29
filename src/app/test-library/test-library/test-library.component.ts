@@ -1,6 +1,5 @@
 import { Component } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
-// import { NgxSearchBarFilter } from 'projects/ngx-search-bar/src/public-api';
 
 @Component({
   selector: 'ngx-test-library',
@@ -10,7 +9,8 @@ import { FormControl, FormGroup } from '@angular/forms';
 export class TestLibraryComponent {
 
   form = new FormGroup({
-    'topping': new FormControl(null, [])
+    'topping': new FormControl(null, []),
+    'select': new FormControl(null, []),
   });
   brands: any[] = []
 

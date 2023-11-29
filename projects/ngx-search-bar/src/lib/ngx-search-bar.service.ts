@@ -16,7 +16,7 @@ export class NgxSearchBarService {
     private location: Location,
     @Inject(NGX_SEARCH_BAR_DATA) private data: NgxSearchBarProvider
   ) {
-    this.getQueryParams()
+    // this.getQueryParams()
   }
   searchBars = new Map<Symbol, {component: NgxSearchBarComponent, params: INsbParams}>()
 
@@ -31,11 +31,11 @@ export class NgxSearchBarService {
   }
 
   changeQueryParams(symbol:Symbol): void {
-    
     let searchParams = new URLSearchParams();
     const p = this.searchBars.get(symbol)!;
     searchParams.set(this.nameQueryParams, JSON.stringify(p.params) || "")
-    this.location.replaceState(this.location.path().split("?")[0], searchParams.toString())
+    const params = searchParams.toString();
+    this.location.replaceState(this.location.path().split("?")[0], params);
   }
 
   getQueryParams() {

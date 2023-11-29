@@ -12,11 +12,16 @@ import { RouterModule } from '@angular/router';
 // import { TestLibraryComponent } from './test-library/test-library/test-library.component';
 import { AppRoutingModule } from './app.routing';
 import { CommonModule, HashLocationStrategy, LocationStrategy } from '@angular/common';
-import { NGX_SEARCH_BAR_DATA, NgxSearchBarModule } from 'ngx-search-bar-fz';
+// import { NGX_SEARCH_BAR_DATA, NgxSearchBarModule } from 'ngx-search-bar-fz';
+import { TestLibraryComponent } from './test-library/test-library/test-library.component';
+import { HomeComponent } from './home/home.component';
+import { NgxSearchBarModule, NGX_SEARCH_BAR_DATA } from 'projects/ngx-search-bar/src/public-api';
 
 @NgModule({
   declarations: [
     AppComponent,
+    TestLibraryComponent,
+    HomeComponent,
   ],
   imports: [
     BrowserModule,
@@ -29,6 +34,7 @@ import { NGX_SEARCH_BAR_DATA, NgxSearchBarModule } from 'ngx-search-bar-fz';
     MatFormFieldModule,
     MatSelectModule,
     MatInputModule,
+    MatSelectModule,
     FormsModule
   ],
   providers: [

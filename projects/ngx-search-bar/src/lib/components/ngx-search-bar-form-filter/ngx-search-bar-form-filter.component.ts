@@ -3,8 +3,6 @@ import { Component, ElementRef, Inject, Input, ViewChild } from "@angular/core"
 import { FormGroup } from "@angular/forms"
 import { empty } from "../../utils/empty"
 import { NGX_SEARCH_BAR_DATA, NgxSearchBarProvider } from "../../utils/DATA_FOR_SEARCH_BAR"
-// import { NgxSearchBarComponent } from '../ngx-search-bar/ngx-search-bar.component';
-import { Location } from "@angular/common"
 import { animate, style, transition, trigger } from "@angular/animations"
 import { NgxSearchBarService } from "../../ngx-search-bar.service"
 
@@ -31,7 +29,6 @@ export class NgxSearchBarFormFilterComponent {
   @Input() textBtnApply!: string;
   @Input() textBtnClose!: string;
   @Input() withParamsClean: boolean = false;
-  // @Input() customBtnApplyFilter: { text?: string; class?: string; color?: string; icon?: string } | null = null;
   @Input() classPanel!: string;
   private filtersSend: { [key: string]: any } | null = null;
   classPosition: string = "";
@@ -41,18 +38,9 @@ export class NgxSearchBarFormFilterComponent {
   private id!: Symbol
 
   constructor(
-    protected location: Location,
     private service: NgxSearchBarService,
     @Inject(NGX_SEARCH_BAR_DATA) public dataInject: NgxSearchBarProvider
   ) {
-    // if (!this.customBtnApplyFilter) {
-    //   this.customBtnApplyFilter = this.dataInject?.OPTIONS?.customBtnApplyFilter || {
-    //     text: "Aplicar Filtros",
-    //     class: "",
-    //     color: "accent",
-    //     icon: "done",
-    //   }
-    // }
     if (!this.textBtnApply) {
       this.textBtnApply = this.dataInject?.OPTIONS_FILTERS?.textButtons?.apply || "Apply Filters";
     }
@@ -131,14 +119,9 @@ export class NgxSearchBarFormFilterComponent {
         this.numberFilter++;
       }
     })
-    this.filters.patchValue(form)
-    // const values = this.filters.value
-    // Object.keys(values).forEach((key) => {
-    //   if (empty(values[key])) {
-    //     return;
-    //   }
-    // this.buttonsFilters.set(key, this.filters.controls[key].value);
-    // })
+    this.filters.patchValue(form);
+    this.service.setParamsForm(this.id, this.filterVerified())
+
   }
 
   getFormFilters(): FormGroup {

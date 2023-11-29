@@ -9,7 +9,7 @@ import {
   OnInit,
   Output,
 } from "@angular/core"
-import { catchError, debounceTime, of, Subject, switchMap, takeUntil } from "rxjs"
+import { catchError, debounceTime, of, skip, Subject, switchMap, takeUntil } from "rxjs"
 import { NgxSearchBarService } from "../../ngx-search-bar.service"
 // import { empty } from "../../utils/empty"
 import { NgxSearchBarFormFilterComponent } from "../ngx-search-bar-form-filter/ngx-search-bar-form-filter.component"
@@ -58,6 +58,7 @@ export class NgxSearchBarComponent implements OnInit, AfterContentInit, OnDestro
     private service: NgxSearchBarService,
     @Inject(NGX_SEARCH_BAR_DATA) private dataProvider: NgxSearchBarProvider
   ) {
+    this.service.getQueryParams()
     if (!this.fnScrollTop) {
       this.fnScrollTop = this.dataProvider?.OPTIONS?.fnScrollTop || null
     }
@@ -111,6 +112,7 @@ export class NgxSearchBarComponent implements OnInit, AfterContentInit, OnDestro
       )
       .subscribe({
         next: (res) => {
+    
           this.isLoading = false;
           this.loading.emit(this.isLoading);
           if (this.ngxPaginator) {

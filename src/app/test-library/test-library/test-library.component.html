@@ -1,2 +1,33 @@
-
-
+<ngx-search-bar
+  [autoInit]="true"
+  title="Novisolutions"
+  (data)="getData($event)"
+  path="posts"
+  [isChangeUrl]="true"
+> 
+  <ngx-search-bar-form-filter [withParamsClean]="true" [filters]="form">
+    <ng-container [formGroup]="form">
+      <mat-form-field style="width: 100%">
+        <mat-label>Search</mat-label>
+        <input matInput type="text" formControlName="topping" />
+      </mat-form-field>
+      <!-- <mat-form-field style="width: 100%">
+          <mat-label>Search</mat-label>
+          <input matInput type="text" [(ngModel)]="filters['filter2'].value" />
+        </mat-form-field> -->
+      <mat-form-field appearance="fill">
+        <mat-label>Toppings</mat-label>
+        <mat-select formControlName="select" multiple>
+          <mat-option value="fer">fer</mat-option>
+          <mat-option value="fer2">fer2</mat-option>
+          <mat-option value="fer3">fer3</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </ng-container>
+  </ngx-search-bar-form-filter>
+  <div style="margin-top: 20px">
+    <div *ngFor="let brand of brands">
+      <div>{{ brand.name }}</div>
+    </div>
+  </div>
+</ngx-search-bar>
