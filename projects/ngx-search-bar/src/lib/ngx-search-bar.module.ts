@@ -10,10 +10,14 @@ import { NgxSearchBarComponent } from './components/ngx-search-bar/ngx-search-ba
 import { HttpClientModule } from '@angular/common/http';
 import { MatBadgeModule } from '@angular/material/badge';
 import { MatPaginatorModule} from '@angular/material/paginator';
+import { NgxSearchBarFormFilterComponent } from './components/ngx-search-bar-form-filter/ngx-search-bar-form-filter.component';
+import { NgxSearchBarPaginatorComponent } from './components/ngx-search-bar-paginator/ngx-search-bar-paginator.component';
 
 @NgModule({
   declarations: [
     NgxSearchBarComponent,
+    NgxSearchBarFormFilterComponent,
+    NgxSearchBarPaginatorComponent,
   ],
   imports: [
     CommonModule,
@@ -30,6 +34,8 @@ import { MatPaginatorModule} from '@angular/material/paginator';
   ],
   exports: [
     NgxSearchBarComponent,
+    NgxSearchBarFormFilterComponent,
+    NgxSearchBarPaginatorComponent,
   ],
   providers: [
   ]

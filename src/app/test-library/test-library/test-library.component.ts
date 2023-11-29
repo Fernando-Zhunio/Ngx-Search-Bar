@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
-import { NgxSearchBarFilter } from 'projects/ngx-search-bar/src/public-api';
+import { FormControl, FormGroup } from '@angular/forms';
+// import { NgxSearchBarFilter } from 'projects/ngx-search-bar/src/public-api';
 
 @Component({
   selector: 'ngx-test-library',
@@ -8,25 +9,13 @@ import { NgxSearchBarFilter } from 'projects/ngx-search-bar/src/public-api';
 })
 export class TestLibraryComponent {
 
-  filters: NgxSearchBarFilter = {
-    'filter1': {
-      friendlyName: 'Tiendas',
-      value: ''
-    },
-    'filter2': {
-      friendlyName: 'Celulares',
-      value: false
-    },
-    'filter3': {
-      friendlyName: 'Categorias',
-      value: []
-    }
-  };
-
+  form = new FormGroup({
+    'topping': new FormControl(null, [])
+  });
   brands: any[] = []
 
   getData(data: any): void {
     console.log(data);
-    this.brands = data.data.results;
+    this.brands = data.data;
   }
 }

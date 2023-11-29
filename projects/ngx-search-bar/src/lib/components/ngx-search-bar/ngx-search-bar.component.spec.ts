@@ -7,7 +7,7 @@ import { MatChipsModule } from '@angular/material/chips';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
-import { DATA_FOR_SEARCH_BAR } from '../../utils/DATA_FOR_SEARCH_BAR';
+import { NGX_SEARCH_BAR_DATA } from '../../utils/DATA_FOR_SEARCH_BAR';
 import { NgxSearchBarComponent } from './ngx-search-bar.component';
 
 describe('NgxSearchBarComponent', () => {
@@ -30,7 +30,7 @@ describe('NgxSearchBarComponent', () => {
       ],
       providers: [
         {
-          provide: DATA_FOR_SEARCH_BAR,
+          provide: NGX_SEARCH_BAR_DATA,
           useValue: {
             BASE_URL: 'http://localhost:3000/',
           }
@@ -53,22 +53,10 @@ describe('NgxSearchBarComponent', () => {
   });
 
   it('#search', () => {
-    component.withParamsClean = false;
     component.path = 'posts'
     component.nameInputSearch = 'search2';
-    component.filters = {
-      "fernando": {
-        friendlyName: 'Fernando',
-        value: 'fer',
-      }, 
-      "fernando2": {
-        friendlyName: 'Fernando2',
-        value: 'fer2',
-      },
-    }
     component.search();
     spyOn(component.data, 'emit');
-
 
     const req = httpMock.expectOne('http://localhost:3000/posts?search2=&fernando=fer&fernando2=fer2');
     expect(req.request.method).toBe('GET');
@@ -82,7 +70,7 @@ describe('NgxSearchBarComponent', () => {
     component.withParamsClean = false;
     component.path = 'posts'
     component.nameInputSearch = 'search2';
-    component.filters = {
+    component.auxfilters = {
       "fernando": {
         friendlyName: 'Fernando',
         value: 'fer',

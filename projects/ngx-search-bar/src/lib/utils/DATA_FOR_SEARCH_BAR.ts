@@ -1,21 +1,43 @@
-import { InjectionToken } from "@angular/core";
+import { InjectionToken } from "@angular/core"
 
 export interface NgxSearchBarProvider {
-  BASE_URL: string;
+  BASE_URL: string
   OPTIONS?: {
-    customBtnApplyFilter?: { text?: string, class?: string, color?: string, icon?: string}
+    classContainerFilter?: string,
+    fnScrollTop?: () => void,
+    stickyTop?: string,
+  }
+  OPTIONS_PAGINATE?: {
+    fnGetLength?: ((arg: any) => number) | string,
+  },
+  OPTIONS_FILTERS?: {
+    textButtons: {
+      apply: string,
+      cancel: string,
+    }
   }
 }
 
 export const defaultConfigNgxSearchBar: NgxSearchBarProvider = {
-  BASE_URL: 'https://jsonplaceholder.typicode.com/',
+  BASE_URL: "https://jsonplaceholder.typicode.com/",
   OPTIONS: {
-    customBtnApplyFilter: { text: 'Aplicar Filtros', class: '', color: 'accent', icon: 'done' }
+    // customBtnApplyFilter: { text: "Aplicar Filtros", class: "" },
+    classContainerFilter: "main-style",
+  },
+  OPTIONS_FILTERS: {
+    textButtons: {
+      apply: "Aplicar",
+      cancel: "Cancelar",
+    }
   }
 }
 
-export const DATA_FOR_SEARCH_BAR = new InjectionToken<NgxSearchBarProvider>('Token de datos para la barra de búsqueda', {
-  providedIn: 'root',
-  factory: () => defaultConfigNgxSearchBar
-}
-);
+export const NGX_SEARCH_BAR_DATA = new InjectionToken<NgxSearchBarProvider>(
+  "Token de datos para la barra de búsqueda",
+  {
+    providedIn: "root",
+    factory: () => defaultConfigNgxSearchBar,
+  }
+)
+
+

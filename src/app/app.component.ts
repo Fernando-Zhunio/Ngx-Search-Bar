@@ -1,38 +1,21 @@
 import { Component, OnInit } from '@angular/core';
+import { FormControl, FormGroup } from '@angular/forms';
 // import { FormControl } from '@angular/forms';
-import { NgxSearchBarFilter } from 'projects/ngx-search-bar/src/public-api';
+// import { NgxSearchBarFilter } from 'projects/ngx-search-bar/src/public-api';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
 })
-export class AppComponent implements OnInit {
-  title = 'ngx-dynamic-island';
-  filters: NgxSearchBarFilter = {
-    'filter1': {
-      friendlyName: 'Tiendas',
-      value: ''
-    },
-    'filter2': {
-      friendlyName: 'Celulares',
-      value: false
-    },
-    'filter3': {
-      friendlyName: 'Categorias',
-      value: []
-    }
-  }; brands: any[] = []
+export class AppComponent   {
+  form = new FormGroup({
+    'topping': new FormControl(null, [])
+  });
+  brands: any[] = []
 
   getData(data: any): void {
     console.log(data);
-    this.brands = data.data.results;
+    this.brands = data.data;
   }
-  constructor() {}
-  ngOnInit(): void {
-  }
-
-
-  
-
 }

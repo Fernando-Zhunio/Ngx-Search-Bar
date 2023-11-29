@@ -17,8 +17,7 @@
         "dist/ngx-dynamic-island-fz"
       ],
       "ngx-search-bar": [
-        "dist/ngx-search-bar/ngx-search-bar",
-        "dist/ngx-search-bar"
+        "project/ngx-search-bar/src/public-api.ts"
       ]
     },
     "declaration": false,

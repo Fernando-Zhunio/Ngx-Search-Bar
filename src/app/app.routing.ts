@@ -4,14 +4,9 @@ import { TestLibraryComponent } from "./test-library/test-library/test-library.c
 
 const routes: Routes = [
     {
-        path: 'test/test-library',
+        path: "",
         component: TestLibraryComponent,
     },
-    {
-        path: 'test/test-library',
-        pathMatch: 'full',
-        redirectTo: 'test/test-library'
-    }
 ]
 
 @NgModule({

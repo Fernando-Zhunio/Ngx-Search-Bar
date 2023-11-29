@@ -1,193 +1,164 @@
-import { NgxSearchBarProvider } from './../../utils/DATA_FOR_SEARCH_BAR';
-import { Component, EventEmitter, Inject, Input, OnDestroy, OnInit, Output } from '@angular/core';
-import { debounceTime, Subject, takeUntil } from 'rxjs';
-import { NgxSearchBarService } from '../../ngx-search-bar.service';
-import { empty } from '../../utils/empty';
-import { DATA_FOR_SEARCH_BAR } from '../../utils/DATA_FOR_SEARCH_BAR';
-import { NgxSearchBarFilter, NgxSearchBarFilterValue } from '../../interfaces/structures';
-import { FormControl } from '@angular/forms';
-import { Location } from '@angular/common';
+import {
+  AfterContentInit,
+  Component,
+  ContentChild,
+  EventEmitter,
+  Inject,
+  Input,
+  OnDestroy,
+  OnInit,
+  Output,
+} from "@angular/core"
+import { catchError, debounceTime, of, Subject, switchMap, takeUntil } from "rxjs"
+import { NgxSearchBarService } from "../../ngx-search-bar.service"
+// import { empty } from "../../utils/empty"
+import { NgxSearchBarFormFilterComponent } from "../ngx-search-bar-form-filter/ngx-search-bar-form-filter.component"
+import { NgxSearchBarPaginatorComponent } from "../ngx-search-bar-paginator/ngx-search-bar-paginator.component"
+import { NGX_SEARCH_BAR_DATA, NgxSearchBarProvider } from "../../utils/DATA_FOR_SEARCH_BAR"
+import { INsbParams } from "../../interfaces/ngx-search-bar.types"
 
 @Component({
-  selector: 'ngx-search-bar',
-  templateUrl: './ngx-search-bar.component.html',
-  styleUrls: ['./ngx-search-bar.component.scss'],
+  // eslint-disable-next-line @angular-eslint/component-selector
+  selector: "ngx-search-bar",
+  templateUrl: "./ngx-search-bar.component.html",
+  styleUrls: ["./ngx-search-bar.component.scss"],
 })
-export class NgxSearchBarComponent implements OnInit, OnDestroy {
+export class NgxSearchBarComponent implements OnInit, AfterContentInit, OnDestroy {
+  
+
+  @ContentChild(NgxSearchBarFormFilterComponent) ngxFormFilter!: NgxSearchBarFormFilterComponent
+  @ContentChild(NgxSearchBarPaginatorComponent) ngxPaginator!: NgxSearchBarPaginatorComponent
+
+  @Input() baseUrl: string | null = null 
+  @Input() placeholder: string = "Search here"
+  @Input() title: string | null = null
+  @Input() path: string = "posts"
+  @Input() isChangeUrl: boolean = false
+  @Input() autoInit: boolean = true
+  @Input() nameInputSearch: string = "search"
+  @Input() isBarExpand: boolean = false
+  @Input() size: number = 1
+  @Input() maxWidth: string = "100%";
+  @Input() isSticky: boolean  = true;
+  @Input() stickyTop: string  = "0px";
+  @Input() fnScrollTop: (() => void)| null = null;
+  @Input() notScroll: boolean = false;
+
+  @Output() data = new EventEmitter<any>()
+  @Output() loading = new EventEmitter<boolean>()
+
+  isLoading: boolean = false
+  destroy$: Subject<boolean> = new Subject<boolean>()
+  searchText: string = ""
+  subject: Subject<{ [key: string]: any }> = new Subject()
+
+  private id = Symbol();
+
   constructor(
-    private searchBarService: NgxSearchBarService,
-    private location: Location,
-    @Inject(DATA_FOR_SEARCH_BAR) private dataInject: NgxSearchBarProvider,
+    private service: NgxSearchBarService,
+    @Inject(NGX_SEARCH_BAR_DATA) private dataProvider: NgxSearchBarProvider
   ) {
+    if (!this.fnScrollTop) {
+      this.fnScrollTop = this.dataProvider?.OPTIONS?.fnScrollTop || null
+    }
+
+    if (this.stickyTop === "0px" && this.dataProvider?.OPTIONS?.stickyTop) {
+      this.stickyTop = this.dataProvider?.OPTIONS?.stickyTop
+    }
   }
 
-  //#region Variables
-  @Input() placeholder: string = 'Search here';
-  @Input() title: string = 'Search';
-  @Input() path: string = 'posts';
-  @Input() isChangeUrl: boolean = false;
-  @Input() filters: NgxSearchBarFilter = {};
-  @Input() withFilter: boolean = false;
-  @Input() autoInit: boolean = true;
-  @Input() nameInputSearch: string = 'search';
-  @Input() customBtnApplyFilter: {
-    text?: string,
-    class?: string,
-    color?: string,
-    icon?: string,
-  } = this.dataInject?.OPTIONS?.customBtnApplyFilter!;
-  @Input() withParamsClean: boolean = true;
-
-  @Output() filtersChange: EventEmitter<any> = new EventEmitter<any>();
-  @Output() data = new EventEmitter<any>();
-  @Output() loading = new EventEmitter<boolean>();
-  formSearch: FormControl = new FormControl('');
-  isLoading: boolean = false;
-  destroy$: Subject<boolean> = new Subject<boolean>();
-  queryParamsNotNUllForTemplate: Map<string, { friendlyName: string, value: { type: string, value: any } }> = new Map();
-  //#endregion Variables
-
   ngOnInit(): void {
-    this.getQueryParamsFromUrl();
-    this.autoInit ? this.search() : this.getQueryParams();
-    this.formSearch.valueChanges
-      .pipe(
-        debounceTime(300),
-        takeUntil(this.destroy$),
-      )
-      .subscribe(() => {
-        this.search()
-      });
+    this.service.addBarSearch(this.id, this)
+    this.subscribeForSearch();
+  }
+
+  ngAfterContentInit(): void {
+    if (this.ngxFormFilter) {
+      this.ngxFormFilter.setId(this.id);
+      this.isChangeUrl && this.ngxFormFilter.loadFilters();
+    }
+
+    if (this.ngxPaginator) {
+      this.ngxPaginator.setId(this.id);
+      this.isChangeUrl && this.ngxPaginator.loadPaginator();
+    }
+    if (this.isChangeUrl) {
+      this.searchText = this.service.queryParams.search || ""
+    }
+    this.autoInit ? this.search() : this.getParamsSend()
   }
 
   ngOnDestroy() {
+    this.service.removeBarSearch(this.id);
     this.destroy$.next(true);
-    this.destroy$.unsubscribe();
+    this.destroy$.unsubscribe()
   }
 
-  search(params: { [key: string]: number } = {}) {
-    this.isLoading = true;
-    this.loading.emit(this.isLoading);
-    const queryParams = this.getQueryParams(params);
-    this.searchBarService.search(this.path, queryParams).subscribe(
-      {
+  scrollTop() {
+    try {
+      if (this.fnScrollTop && !this.notScroll) {
+        this.fnScrollTop()
+      }
+    } catch (error) {}
+  }
+
+  subscribeForSearch(): void {
+    this.subject
+      .pipe(
+        debounceTime(300),
+        takeUntil(this.destroy$),
+        switchMap((value) => this.searchObservable(value))
+      )
+      .subscribe({
         next: (res) => {
           this.isLoading = false;
           this.loading.emit(this.isLoading);
+          if (this.ngxPaginator) {
+            this.ngxPaginator.setLength(res);
+          }
           if (this.isChangeUrl) {
-            this.setQueryParamsForUrl(queryParams);
+            this.service.setParamsSearch(this.id, this.searchText);
+            this.service.changeQueryParams(this.id);
           }
           this.data.emit(res);
         },
         error: () => {
           this.isLoading = false;
           this.loading.emit(this.isLoading);
-        }
-      }
-    );
-  }
-
-  setQueryParamsForUrl(params: { [key: string]: NgxSearchBarFilterValue }) {
-    let searchParams = new URLSearchParams();
-    Object.keys(params).forEach(key => {
-      const value = (Array.isArray(params[key]) ? JSON.stringify(params[key]) : params[key]) as string;
-      searchParams.set(key, value)
-    })
-    console.log(this.location.path())
-    this.location.replaceState(this.location.path().split('?')[0],searchParams.toString())
-  }
-
-  filterVerified(): { [key: string]: NgxSearchBarFilterValue } {
-    const filtersOverride: { [key: string]: NgxSearchBarFilterValue } = {};
-    this.queryParamsNotNUllForTemplate.clear();
-    for (const key in this.filters) {
-      if (!empty(this.filters[key].value)) {
-        this.queryParamsNotNUllForTemplate.set(key, this.getStructureForTemplate(this.filters[key]));
-        filtersOverride[key] = this.filters[key].value;
-      }
-    }
-    return this.withParamsClean ? filtersOverride : Object.keys(this.filters)
-      .reduce((acc: { [key: string]: NgxSearchBarFilterValue }, curr) => {
-        acc[curr] = this.filters[curr].value
-        return acc;
-      }, {});
-  }
-
-  getStructureForTemplate(struct: { friendlyName: string, value: NgxSearchBarFilterValue }): { friendlyName: string, value: { type: string, value: any } } {
-    return {
-      friendlyName: struct.friendlyName,
-      value: this.forStructure(struct.value)
-    }
-  }
-
-  forStructure(value: NgxSearchBarFilterValue): any {
-    const type = typeof value;
-    if (type === 'string' || type === 'number') {
-      return {
-        type,
-        value
-      }
-    }
-    if (type === 'boolean') {
-      return {
-        type,
-        value: false
-      }
-    }
-    if (Array.isArray(value)) {
-      return {
-        type: 'array',
-        value: `x${value.length}`
-      }
-    }
-    if (type === 'object') {
-      return {
-        type: 'object',
-        value: `x${Object.keys('value').length}`
-      }
-    }
-  }
-
-  removeQueryParam(key: string) {
-    this.queryParamsNotNUllForTemplate.delete(key);
-    this.filters[key].value = null;
-    this.search();
-  }
-
-  getQueryParams(params: { [key: string]: NgxSearchBarFilterValue } = {}): { [key: string]: NgxSearchBarFilterValue } {
-    return {
-      [this.nameInputSearch]: this.formSearch.value,
-      ...params,
-      ...this.filterVerified(),
-    };
-  } 
-
-  getQueryParamsFromUrl(): void {
-    const segmentUrl = window.location.href.split('?');
-    if (segmentUrl.length === 1) return;
-    // const params: any = new Proxy(new URLSearchParams(segmentUrl[1]), {
-    //   get: (target, prop) => target.get(prop as string)
-    // })
-    const params = Object.fromEntries(new URLSearchParams(segmentUrl[1]));
-
-    console.log({params})
-    if (!params) return;
-    try {
-      if (params.hasOwnProperty(this.nameInputSearch)) {
-        this.formSearch.setValue(params[this.nameInputSearch]);
-      }
-      Object.keys(this.filters).forEach((key) => {
-        if (params.hasOwnProperty(key)) {
-          if (params[key].match(/(^\[.+(\])$)|true|false/)) {
-            this.filters[key].value = JSON.parse(params[key]);
-          } else {
-            this.filters[key].value = params[key];
-          }
-        }
+        },
       })
-    } catch (error) {
-      console.log('Url mal formada');
-    }
   }
 
+  searchObservable(params: { [key: string]: number } = {}) {
+    this.isLoading = true
+    this.scrollTop();
+    this.loading.emit(this.isLoading)
+    const p = this.getParamsSend(params)
+    return this.service.search(this.path, p, this.baseUrl).pipe(
+      catchError(() => {
+        this.isLoading = false
+        this.loading.emit(this.isLoading)
+        return of(null) as any
+      } )
+    )
+  }
+
+  search(params: { [key: string]: number } = {}) {
+    this.subject.next(params)
+  }
+
+  getParamsSend(params: { [key: string]: any } = {}): { [key: string]: any } {
+    const p: any = this.service.getBarSearch(this.id)?.params as any || {};
+    const paginate: { [key: string]: number } = {};
+    if (p?.paginate) {
+      paginate[p.paginate.page.field] = p.paginate.page.value;
+      paginate[p.paginate.pageSize.field] = p.paginate.pageSize.value;
+    }
+    return {
+      [this.nameInputSearch]: this.searchText,
+      ...(p?.form || {}),
+      ...(paginate),
+      ...params,
+    }
+  }
 }

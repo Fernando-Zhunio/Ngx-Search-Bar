@@ -109,7 +109,7 @@
       }
     },
     "ngx-search-bar": {
-      "projectType": "ngx",
+      "projectType": "library",
       "root": "projects/ngx-search-bar",
       "sourceRoot": "projects/ngx-search-bar/src",
       "prefix": "lib",
